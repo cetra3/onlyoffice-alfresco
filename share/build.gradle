@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath group: 'com.parashift.amp', name: 'amp-plugin', version: '1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'alfresco-amp'
+
+allprojects {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://maven.alfresco.com/nexus/content/groups/public"
+    }
+}
+
+dependencies {
+    compile 'org.springframework.extensions.surf:spring-webscripts:1.2.0'
+}
+
+amp {
+    // id is mandatory when you want to pack a AMP
+    id = "com.parashift.onlyoffice-alfresco"
+
+    // the following is options but highly recommended you fill yourself
+    // as the plugin just infer the values from project.version
+    // and project.name
+    alias = "onlyoffice-alfresco"
+    version = "1.0.0"
+    title = "Onlyoffice Alfresco Integration"
+    description = "This Module integrates Alfresco Share with Onlyoffice"
+ }
+

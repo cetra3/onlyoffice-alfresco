@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Edit in Onlyoffice</title>
+   <title-id>page.onlyoffice-edit.title</title-id>
+   <description>Edit in Onlyoffice</description>
+   <description-id>page.onlyoffice-edit.description</description-id>
+   <template-instance>onlyoffice-edit</template-instance>
+   <authentication>user</authentication>
+</page>

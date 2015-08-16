@@ -1,0 +1,24 @@
+<alfresco-config>
+
+    <config evaluator="string-compare" condition="DocLibActions">
+        <actions>
+            <action id="document-onlyoffice-edit" type="pagelink" label="actions.document.onlyoffice-edit">
+                <param name="page">onlyoffice-edit?nodeRef={node.nodeRef}</param>
+                <permissions>
+                    <permission allow="true">Write</permission>
+                </permissions>
+                <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            </action>
+        </actions>
+        <actionGroups>
+            <actionGroup id="document-browse">
+                <action index="90" id="document-onlyoffice-edit" />
+            </actionGroup>
+            <actionGroup id="document-details">
+                <action index="90" id="document-onlyoffice-edit" />
+            </actionGroup>
+        </actionGroups>
+    </config>
+
+
+</alfresco-config>

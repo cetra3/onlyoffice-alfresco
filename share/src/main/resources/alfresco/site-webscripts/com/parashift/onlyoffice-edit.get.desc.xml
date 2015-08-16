@@ -1,0 +1,5 @@
+<webscript>
+   <shortname>Onlyoffice Edit</shortname>
+   <description>Component used to display an embedded Onlyoffice iframe for editing of content</description>
+   <url>/components/onlyoffice-edit</url>
+</webscript>
