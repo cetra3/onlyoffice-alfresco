@@ -37,7 +37,7 @@ import java.util.Properties;
  */
 @Component
 @WebScript
-public class prepare {
+public class WebHandlers {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -83,7 +83,7 @@ public class prepare {
             responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 
             logger.debug("Sending JSON prepare object");
-            //logger.debug(responseJson.toString(3));
+            logger.debug(responseJson.toString(3));
 
             response.getWriter().write(responseJson.toString(3));
 

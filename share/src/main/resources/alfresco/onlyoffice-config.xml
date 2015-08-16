@@ -7,7 +7,6 @@
                 <permissions>
                     <permission allow="true">Write</permission>
                 </permissions>
-                <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
             </action>
         </actions>
         <actionGroups>

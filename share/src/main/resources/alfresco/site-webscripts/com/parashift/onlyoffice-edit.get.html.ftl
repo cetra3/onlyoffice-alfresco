@@ -7,7 +7,7 @@
     <link href="${url.context}/res/components/onlyoffice/onlyoffice.css" type="text/css" rel="stylesheet">
 
     <!--Change the address on installed ONLYOFFICE™ Online Editors-->
-    <script id="scriptApi" type="text/javascript" src="http://192.168.0.102/OfficeWeb/apps/api/documents/api.js"></script>
+    <script id="scriptApi" type="text/javascript" src="${onlyofficeUrl}OfficeWeb/apps/api/documents/api.js"></script>
 
     <script type="text/javascript" src="${url.context}/res/components/onlyoffice/sha256.js"></script>
     <script type="text/javascript" src="${url.context}/res/components/onlyoffice/onlyoffice.js"></script>
@@ -19,8 +19,9 @@
     </div>
     <script>
 
-    var docUrl = "http://onlyo.co/1x5REbq?demo.docx";
-    var docType = docUrl.substring(docUrl.lastIndexOf(".") + 1).trim().toLowerCase();
+    var docUrl = "${docUrl}";
+    var docName = "${docTitle}";
+    var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
     var documentType = getDocumentType(docType);
 
     new DocsAPI.DocEditor("placeholder",
@@ -30,10 +31,10 @@
             height: "100%",
             documentType: documentType,
             document: {
-                title: docUrl,
+                title: docName,
                 url: docUrl,
                 fileType: docType,
-                key: "${nodeRef}",
+                key: "${key}",
                 permissions: {
                     edit: true
                 }
@@ -41,7 +42,11 @@
             editorConfig: {
                 mode: "edit",
                 canAutosave: false,
-                callbackUrl: "http://192.168.1.12:8080/test.php"
+                callbackUrl: "${callbackUrl}",
+                user: {
+                  id: "${userId}",
+                  name: "${fullName}"
+                }
             },
             events: {
                 'onSave': function() {
