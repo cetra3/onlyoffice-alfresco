@@ -36,13 +36,6 @@ version = "git describe --tags".execute().text.trim()
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://maven.alfresco.com/nexus/content/groups/public/"
-    }
-
-    maven {
-        url "http://repository.springsource.com/maven/bundles/external"
-    }
 
     maven {
         credentials {
@@ -54,6 +47,11 @@ repositories {
     }
 }
 
+configurations {
+    all*.exclude group: 'maven-plugins'
+}
+
+
 dependencies {
     compile (group: "org.alfresco", name: "alfresco", version: "${alfresco.version}", classifier: "classes") {
         exclude module: "alfresco-web-framework-commons"
@@ -61,9 +59,9 @@ dependencies {
         exclude group: "org.springframework"
         exclude group: "org.mybatis"
     }
-    compile "org.alfresco:alfresco-web-framework-commons:${alfresco.version}"
 
-    compile "org.json:json:20141113"
+
+    compile 'org.json:json:20141113'
 
     compile 'org.springframework:spring-context:3.0.0.RELEASE'
     compile 'org.springframework:spring-beans:3.0.0.RELEASE'
