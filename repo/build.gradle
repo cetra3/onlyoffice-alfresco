@@ -24,10 +24,9 @@ ext {
     alfresco = [:]
     alfresco.version = "5.0.1"
 
-    baseName = "onlyoffice-alfresco-repo"
 }
 
-project.description = "Onlyoffice Integration"
+project.description = "Onlyoffice Integration for Alfresco"
 version = "git describe --tags".execute().text.trim()
 
 
@@ -67,18 +66,15 @@ dependencies {
 }
 
 jar {
-    baseName = project.baseName
+    baseName = project.name
     version = project.version
 }
 
 amp {
-    id = "com.parashift." + project.baseName
-    baseName = project.baseName
-    alias = "onlyoffice"
+    id = "com.parashift." + project.name
     version = project.version
-    title = "Onlyoffice"
+    title = "Onlyoffice Alfresco Integration Repo"
     description = project.description
-
 }
 
 

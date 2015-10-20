@@ -15,6 +15,9 @@ allprojects {
     targetCompatibility = 1.7
 }
 
+project.description = "Onlyoffice Integration for Alfresco Share"
+version = "git describe --tags".execute().text.trim()
+
 
 repositories {
     mavenCentral()
@@ -27,16 +30,16 @@ dependencies {
     compile 'org.springframework.extensions.surf:spring-webscripts:1.2.0'
 }
 
+jar {
+    baseName = project.name
+    version = project.version
+}
+
 amp {
     // id is mandatory when you want to pack a AMP
-    id = "com.parashift.onlyoffice-alfresco"
-
-    // the following is options but highly recommended you fill yourself
-    // as the plugin just infer the values from project.version
-    // and project.name
-    alias = "onlyoffice-alfresco"
-    version = "1.0.0"
-    title = "Onlyoffice Alfresco Integration"
-    description = "This Module integrates Alfresco Share with Onlyoffice"
+    id = "com.parashift" + project.name
+    version = project.version
+    title = "Onlyoffice Alfresco Integration Share"
+    description = project.description
  }
 
