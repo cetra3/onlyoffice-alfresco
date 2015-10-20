@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Onlyoffice CallBack URL</shortname>
+    <description>Callback URL for Onlyoffice to inform Alfresco</description>
+    <url>/parashift/onlyoffice/callback</url>
+    <authentication>user</authentication>
+</webscript>

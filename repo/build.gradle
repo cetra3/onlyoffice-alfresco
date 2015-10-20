@@ -3,16 +3,13 @@ buildscript {
         jcenter()
         mavenLocal()
     }
-
     dependencies {
         classpath group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.6'
-        classpath group: 'com.github.dynamicextensionsalfresco', name: 'gradle-plugin', version: '1.3.0'
         classpath group: 'com.parashift.amp', name: 'amp-plugin', version: '1.0-SNAPSHOT'
     }
 }
 
 
-apply plugin: 'alfresco-dynamic-extension'
 apply plugin: 'alfresco-amp'
 
 allprojects {
@@ -72,13 +69,6 @@ dependencies {
 jar {
     baseName = project.baseName
     version = project.version
-
-    manifest {
-        instructionReplace 'Bundle-Name', 'Onlyoffice Alfresco'
-        instruction 'Bundle-Description', project.description
-        instruction 'Alfresco-Spring-Configuration', 'com.parashift'
-        instruction 'Bundle-DocURL', 'http://www.parashift.com.au'
-    }
 }
 
 amp {
@@ -89,23 +79,7 @@ amp {
     title = "Onlyoffice"
     description = project.description
 
-    dependsOn("com.github.dynamicextensionsalfresco:1.0:2.0")
 }
-
-alfrescoDynamicExtensions {
-    repository {
-        endpoint {
-            host = project.hasProperty('hostname') ? project.hostname : 'localhost'
-            port = '8080'
-            serviceUrl = '/alfresco/service'
-        }
-        authentication {
-            username = project.hasProperty('username') ? project.username : 'admin'
-            password = project.hasProperty('password') ? project.password : 'admin'
-        }
-    }
-}
-
 
 
 
