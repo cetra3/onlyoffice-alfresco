@@ -4,6 +4,7 @@
         <actions>
             <action id="document-onlyoffice-edit" type="pagelink" label="actions.document.onlyoffice-edit">
                 <param name="page">onlyoffice-edit?nodeRef={node.nodeRef}</param>
+                <param name="target">_blank</param>
                 <permissions>
                     <permission allow="true">Write</permission>
                 </permissions>
