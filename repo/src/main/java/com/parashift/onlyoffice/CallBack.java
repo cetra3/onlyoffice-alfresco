@@ -1,7 +1,9 @@
 package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.service.cmr.lock.LockService;
+import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -16,6 +18,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +33,9 @@ public class CallBack extends AbstractWebScript {
 
     @Autowired
     LockService lockService;
+
+    @Resource(name = "policyBehaviourFilter")
+    BehaviourFilter behaviourFilter;
 
     @Autowired
     ContentService contentService;
@@ -55,13 +61,18 @@ public class CallBack extends AbstractWebScript {
                 lockService.unlock(nodeRef);
                 break;
             case 1:
-                logger.debug("Document open for editing, locking document");
-                lockService.lock(nodeRef, LockType.WRITE_LOCK);
+                if(lockService.getLockStatus(nodeRef).equals(LockStatus.NO_LOCK)) {
+                    logger.debug("Document open for editing, locking document");
+                    behaviourFilter.disableBehaviour(nodeRef);
+                    lockService.lock(nodeRef, LockType.WRITE_LOCK);
+                } else {
+                    logger.debug("Document already locked, another user has entered/exited");
+                }
                 break;
             case 2:
                 logger.debug("Document Updated, changing content");
-                updateNode(nodeRef, callBackJSon.getString("url"));
                 lockService.unlock(nodeRef);
+                updateNode(nodeRef, callBackJSon.getString("url"));
                 break;
             case 3:
                 logger.error("Onlyoffice has reported that saving the document has failed");
