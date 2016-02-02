@@ -13,6 +13,8 @@ buildscript {
 apply plugin: 'alfresco-amp'
 
 allprojects {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
@@ -26,9 +28,11 @@ ext {
 
 }
 
+
+
+
 project.description = "Onlyoffice Integration for Alfresco"
 version = "git describe --tags".execute().text.trim()
-
 
 repositories {
     mavenCentral()

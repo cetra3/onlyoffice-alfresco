@@ -54,6 +54,8 @@ public class Prepare extends AbstractWebScript {
 
             Map<QName, Serializable> properties = nodeService.getProperties(nodeRef);
 
+            response.setContentType("application/json; charset=utf-8");
+            response.setContentEncoding("UTF-8");
 
             String contentUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/node/content/workspace/SpacesStore/" + nodeRef.getId() + "?alf_ticket=" + authenticationService.getCurrentTicket();
             String key = nodeRef.getId() + "_" + dateFormat.format(properties.get(ContentModel.PROP_MODIFIED));
