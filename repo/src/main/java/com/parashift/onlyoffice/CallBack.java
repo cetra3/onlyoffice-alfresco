@@ -83,6 +83,8 @@ public class CallBack extends AbstractWebScript {
                 lockService.unlock(nodeRef);
                 break;
         }
+
+        response.getWriter().write("{\"error\":0}");
     }
 
     private void updateNode(NodeRef nodeRef, String url) {
