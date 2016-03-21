@@ -41,7 +41,6 @@
             },
             editorConfig: {
                 mode: "edit",
-                canAutosave: false,
                 callbackUrl: "${callbackUrl}",
                 user: {
                   id: "${userId}",
