@@ -18,7 +18,6 @@
     </div>
     <script>
 
-    var docUrl = "${docUrl}";
     var docName = "${docTitle}";
     var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
     var documentType = getDocumentType(docType);
@@ -31,30 +30,24 @@
             documentType: documentType,
             document: {
                 title: docName,
-                url: docUrl,
+                url: "${docUrl}",
                 fileType: docType,
                 key: "${key}",
                 permissions: {
                     edit: true
-                }
+                },
             },
             editorConfig: {
                 mode: "edit",
                 callbackUrl: "${callbackUrl}",
                 user: {
                   id: "${userId}",
-                  name: "${fullName}"
+                  firstname: "${firstName}",
+                  lastname: "${lastName}",
                 }
             },
             events: {
-                'onSave': function() {
-                  console.log("Save button pressed!");
-                },
-                'onDocumentStateChange': function()
-                {
-                  console.log("State Changed");
-                }
-            }
+            },
         });
     </script>
 </body>

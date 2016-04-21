@@ -7,5 +7,6 @@ model.key = pObj.key;
 model.onlyofficeUrl = pObj.onlyofficeUrl;
 
 model.userId = user.id;
-model.fullName = user.fullName;
+model.firstName = user.firstName;
+model.lastName = user.lastName;
 
