@@ -15,7 +15,7 @@ allprojects {
     targetCompatibility = 1.7
 }
 
-project.description = "Onlyoffice Integration for Alfresco Share"
+project.description = "ONLYOFFICE Integration for Alfresco Share"
 version = "git describe --tags".execute().text.trim()
 
 
@@ -39,7 +39,7 @@ amp {
     // id is mandatory when you want to pack a AMP
     id = "com.parashift" + project.name
     version = project.version
-    title = "Onlyoffice Alfresco Integration Share"
+    title = "ONLYOFFICE Alfresco Integration Share"
     description = project.description
  }
 

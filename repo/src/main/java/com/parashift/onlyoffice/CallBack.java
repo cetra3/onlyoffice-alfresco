@@ -57,7 +57,7 @@ public class CallBack extends AbstractWebScript {
 
         switch(callBackJSon.getInt("status")) {
             case 0:
-                logger.error("Onlyoffice has reported that no doc with the specified key can be found");
+                logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
                 lockService.unlock(nodeRef);
                 break;
             case 1:
@@ -75,7 +75,7 @@ public class CallBack extends AbstractWebScript {
                 updateNode(nodeRef, callBackJSon.getString("url"));
                 break;
             case 3:
-                logger.error("Onlyoffice has reported that saving the document has failed");
+                logger.error("ONLYOFFICE has reported that saving the document has failed");
                 lockService.unlock(nodeRef);
                 break;
             case 4:
