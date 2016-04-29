@@ -31,7 +31,7 @@ ext {
 
 
 
-project.description = "Onlyoffice Integration for Alfresco"
+project.description = "ONLYOFFICE Integration for Alfresco"
 version = "git describe --tags".execute().text.trim()
 
 repositories {
@@ -72,9 +72,7 @@ jar {
 amp {
     id = "com.parashift." + project.name
     version = project.version
-    title = "Onlyoffice Alfresco Integration Repo"
+    title = "ONLYOFFICE Alfresco Integration Repo"
     description = project.description
 }
-
-
 

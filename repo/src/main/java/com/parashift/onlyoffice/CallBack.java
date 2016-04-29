@@ -28,6 +28,10 @@ import java.text.SimpleDateFormat;
 /**
  * Created by cetra on 20/10/15.
  */
+ /*
+    Copyright (c) Ascensio System SIA 2016. All rights reserved.
+    http://www.onlyoffice.com
+*/
 @Component(value = "webscript.onlyoffice.callback.post")
 public class CallBack extends AbstractWebScript {
 
@@ -57,7 +61,7 @@ public class CallBack extends AbstractWebScript {
 
         switch(callBackJSon.getInt("status")) {
             case 0:
-                logger.error("Onlyoffice has reported that no doc with the specified key can be found");
+                logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
                 lockService.unlock(nodeRef);
                 break;
             case 1:
@@ -75,7 +79,7 @@ public class CallBack extends AbstractWebScript {
                 updateNode(nodeRef, callBackJSon.getString("url"));
                 break;
             case 3:
-                logger.error("Onlyoffice has reported that saving the document has failed");
+                logger.error("ONLYOFFICE has reported that saving the document has failed");
                 lockService.unlock(nodeRef);
                 break;
             case 4:
