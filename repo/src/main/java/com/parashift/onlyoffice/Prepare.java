@@ -27,6 +27,10 @@ import java.util.Properties;
  * Created by cetra on 20/10/15.
  * Sends Alfresco Share the necessaries to build up what information is needed for the OnlyOffice server
  */
+ /*
+    Copyright (c) Ascensio System SIA 2016. All rights reserved.
+    http://www.onlyoffice.com
+*/
 @Component(value = "webscript.onlyoffice.prepare.get")
 public class Prepare extends AbstractWebScript {
 

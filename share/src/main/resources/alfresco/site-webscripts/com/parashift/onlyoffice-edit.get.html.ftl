@@ -1,3 +1,7 @@
+<!--
+    Copyright (c) Ascensio System SIA 2016. All rights reserved.
+    http://www.onlyoffice.com
+-->
 <html>
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
