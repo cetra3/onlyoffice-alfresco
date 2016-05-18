@@ -48,6 +48,7 @@
                   id: "${userId}",
                   firstname: "${firstName}",
                   lastname: "${lastName}",
+                  name: "${firstName} ${lastName}",
                 }
             },
             events: {

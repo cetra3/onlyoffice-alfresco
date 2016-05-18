@@ -22,7 +22,7 @@ You will need:
 
 ## Installing ONLYOFFICE™ Document Server
 
-You will need an instance of ONLYOFFICE™ Document Server that is resolvable and connectable both from Alfresco and any end clients. If that is not the case, use the official ONLYOFFICE™ Document Server documentation page: [Document Server for Linux](http://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE™ Document Server must also be able to POST to Alfresco directly.
+You will need an instance of ONLYOFFICE™ Document Server that is resolvable and connectable both from Alfresco and any end clients (version 3.0 and later are supported for use with the plugin). If that is not the case, use the official ONLYOFFICE™ Document Server documentation page: [Document Server for Linux](http://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE™ Document Server must also be able to POST to Alfresco directly.
 
 The easiest way to start an instance of ONLYOFFICE™ Document Server is to use [Docker](https://github.com/ONLYOFFICE/Docker-DocumentServer).
 
