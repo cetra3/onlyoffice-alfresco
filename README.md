@@ -4,17 +4,8 @@ This Share plugin enables users to edit Office documents within Onlyoffice from 
 
 Tested with Enterprise 5.0.\*
 
-## Compiling
-
-You will need:
-
-* Java 7 SDK or above
-
-* Gradle
-
-* Parashift's alfresco amp plugin from here: https://bitbucket.org/parashift/alfresco-amp-plugin
-
-* Run `gradle amp` from the `share` and `repo` directories
+## Requirements
+* For Alfresco Enterprise 5.0.\* and later
 
 ## Installation
 
@@ -34,6 +25,17 @@ The easiest way to start an instance of onlyoffice is to use Docker: https://git
 * Add the `onlyoffice.url` property to alfresco-global.properties:
   * e.g:  `onlyoffice.url=http://onlyoffice.mycompany.com/`
 
+## Compiling
+
+You will need:
+
+* Java 7 SDK or above
+
+* Gradle
+
+* Parashift's alfresco amp plugin from here: https://bitbucket.org/parashift/alfresco-amp-plugin
+
+* Run `gradle amp` from the `share` and `repo` directories
 
 ## Usage
 ### How it works
