@@ -36,6 +36,10 @@ You will need:
 * Parashift's alfresco amp plugin from here: https://bitbucket.org/parashift/alfresco-amp-plugin
 
 * Run the command below under the project folder
+```
+gradle -b repo/build.gradle amp
+gradle -b share/build.gradle amp
+```
 
 ## Usage
 ### How it works
