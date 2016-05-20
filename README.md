@@ -90,8 +90,8 @@ onlyoffice.url=http://documentserver/
 
 * Restart Alfresco:
 ```bash
-alfresco.sh stop
-alfresco.sh start
+./alfresco.sh stop
+./alfresco.sh start
 ```
 
 The module can be checked in administrator tools in Alfresco 5.1 or at `/share/page/modules/deploy` in Alfresco 5.0.
