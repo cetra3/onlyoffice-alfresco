@@ -1,4 +1,4 @@
-# Alfresco Onlyoffice integration
+# Alfresco Onlyoffice Integration
 
 This Share plugin enables users to edit Office documents within Onlyoffice from Alfresco Share.  This will create a new **Edit in Onlyoffice** action within the document library for Office documents.  This allows multiple users to collaborate in real time and to save back those changes to Alfresco.
 
