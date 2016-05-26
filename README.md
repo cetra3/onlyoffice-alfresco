@@ -29,6 +29,7 @@ The easiest way to start an instance of onlyoffice is to use Docker: https://git
   * e.g:  `onlyoffice.url=http://onlyoffice.mycompany.com/` or `onlyoffice.url=http://localhost/`
   
   This will tell Alfresco to find onlyoffice instance via port 80, if you need to start onlyoffice via other port rather than 80, then you need to add port information as well
+  Also, you need to make sure the `/etc/hosts` file contain the right mapping, i.e., `127.0.0.1 localhost`
 
 ## Compiling
 If you've alfready downloaded the compiled amps, please skip this section
