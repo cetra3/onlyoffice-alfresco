@@ -29,6 +29,7 @@ The easiest way to start an instance of onlyoffice is to use Docker: https://git
   * e.g:  `onlyoffice.url=http://onlyoffice.mycompany.com/` or `onlyoffice.url=http://localhost/`
 
 ## Compiling
+If you've alfready downloaded the compiled amps, please skip this section
 
 You will need:
 
