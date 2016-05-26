@@ -48,7 +48,7 @@ gradle -b share/build.gradle amp
 ```
 
 ## Usage
-New action option `Edit in OnlyOffice` will be able to use as below:
+In document detail page, new action option `Edit in OnlyOffice` will be able to use as below:
 
 ![editinonlyoffice](edit_in_onlyoffice.png)
 
