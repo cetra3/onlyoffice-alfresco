@@ -26,7 +26,7 @@ The easiest way to start an instance of onlyoffice is to use Docker: https://git
   other methods
 
 * Add the `onlyoffice.url` property to alfresco-global.properties:
-  * e.g:  `onlyoffice.url=http://onlyoffice.mycompany.com/`
+  * e.g:  `onlyoffice.url=http://onlyoffice.mycompany.com/` or `onlyoffice.url=http://localhost/`
 
 ## Compiling
 
