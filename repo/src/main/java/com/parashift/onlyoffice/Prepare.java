@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Properties;
@@ -27,10 +28,6 @@ import java.util.Properties;
  * Created by cetra on 20/10/15.
  * Sends Alfresco Share the necessaries to build up what information is needed for the OnlyOffice server
  */
- /*
-    Copyright (c) Ascensio System SIA 2016. All rights reserved.
-    http://www.onlyoffice.com
-*/
 @Component(value = "webscript.onlyoffice.prepare.get")
 public class Prepare extends AbstractWebScript {
 
@@ -68,14 +65,26 @@ public class Prepare extends AbstractWebScript {
             JSONObject responseJson = new JSONObject();
             responseJson.put("docUrl", contentUrl);
             responseJson.put("callbackUrl", callbackUrl);
-            responseJson.put("onlyofficeUrl", globalProp.getOrDefault("onlyoffice.url", "http://127.0.0.1/"));
+
+            if(globalProp.containsKey("onlyoffice.url")) {
+                responseJson.put("onlyofficeUrl", globalProp.get("onlyoffice.url"));
+            } else {
+                responseJson.put("onlyofficeUrl", "http://127.0.0.1/");
+            }
+
             responseJson.put("key", key);
             responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
+
+            if(globalProp.containsKey("onlyoffice.lang")) {
+                responseJson.put("lang", globalProp.get("onlyoffice.lang"));
+            }
 
             logger.debug("Sending JSON prepare object");
             logger.debug(responseJson.toString(3));
 
-            response.getWriter().write(responseJson.toString(3));
+            try(Writer responseWriter = response.getWriter()) {
+                responseJson.write(responseWriter);
+            }
 
         }
     }

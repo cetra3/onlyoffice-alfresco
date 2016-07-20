@@ -8,6 +8,7 @@
                 <permissions>
                     <permission allow="true">Write</permission>
                 </permissions>
+                <evaluator>evaluator.doclib.action.onlyofficeEditMimetype</evaluator>
             </action>
         </actions>
         <actionGroups>

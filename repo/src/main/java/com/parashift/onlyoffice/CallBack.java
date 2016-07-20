@@ -22,16 +22,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
 /**
  * Created by cetra on 20/10/15.
  */
- /*
-    Copyright (c) Ascensio System SIA 2016. All rights reserved.
-    http://www.onlyoffice.com
-*/
 @Component(value = "webscript.onlyoffice.callback.post")
 public class CallBack extends AbstractWebScript {
 
@@ -88,7 +85,13 @@ public class CallBack extends AbstractWebScript {
                 break;
         }
 
-        response.getWriter().write("{\"error\":0}");
+        //Respond as per doco
+        try(Writer responseWriter = response.getWriter()) {
+            JSONObject responseJson = new JSONObject();
+            responseJson.put("error", 0);
+            responseJson.write(responseWriter);
+        }
+
     }
 
     private void updateNode(NodeRef nodeRef, String url) {

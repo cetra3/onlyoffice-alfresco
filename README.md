@@ -4,6 +4,20 @@ This Share plugin enables users to edit Office documents within ONLYOFFICE from 
 
 Tested with Enterprise 5.0.\*, 5.1.\* and Community 5.1.\*
 
+## Release Notes
+
+### Version `1.1.0`
+
+
+* Support for OnlyOffice version 4 (Tested with Alfresco Enterprise 5.1)
+* Adds a few more Languages as per the ONLYOFFICE fork
+* Limits the Edit in OnlyOffice button to certain mime types within Alfresco, rather than globally available as an action
+* Adds a keep alive to make sure the share session does not expire when you have a window open
+* Adds a new global property: `onlyoffice.lang`.  This will set the language of the editor.  E.g, for italian:
+  ```
+  onlyoffice.lang=it
+  ```
+* Wrapped some response writers in the try blocks
 
 ## Compiling
 
@@ -32,7 +46,25 @@ The easiest way to start an instance of ONLYOFFICE is to use Docker: https://git
 * Deploy the amp to both the repo and share end using alfresco-mmt or other methods
 
 * Add the `onlyoffice.url` property to alfresco-global.properties:
-  * e.g: `onlyoffice.url=http://documentserver/`
+  ```
+  onlyoffice.url=http://documentserver/
+  ```
+
+*  OnlyOffice will make the connection to Alfresco on behalf of the client, so OnlyOffice needs to be able to talk to Alfresco.  In order for OnlyOffice to do this, Alfresco needs to generate what it thinks the external URL is.  Make sure that the following properties are set correctly in `alfresco-global.properties`
+
+  ```
+  alfresco.protocol=http
+  alfresco.host=alfresco.yourcompany.local
+  alfresco.port=8080
+  alfresco.context=alfresco
+  ```
+
+* (Optional) set the default language that the editor will use.  By default the document editor should pick up the language of the browser, so it doesn't always need to be set.
+
+  ```
+  onlyoffice.lang=en
+  ```
+
 
 
 ## How it works
