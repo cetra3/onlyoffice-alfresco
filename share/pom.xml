@@ -5,9 +5,9 @@
   <groupId>com.parashift.onlyoffice-alfresco</groupId>
   <artifactId>onlyoffice-integration-share</artifactId>
   <version>1.0.0</version>
-  <name>Onlyoffice Alfresco Integration</name>
+  <name>ONLYOFFICE Alfresco Integration</name>
   <packaging>amp</packaging>
-  <description>This Module integrates Alfresco Share with Onlyoffice</description>
+  <description>This Module integrates Alfresco Share with ONLYOFFICE</description>
 
   <parent>
     <groupId>org.alfresco.maven</groupId>

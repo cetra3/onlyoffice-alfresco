@@ -1,6 +1,6 @@
 <webscript>
-    <shortname>Onlyoffice Prepare URL</shortname>
-    <description>Sends information to Share to prepare the Onlyoffice Edit Page</description>
+    <shortname>ONLYOFFICE Prepare URL</shortname>
+    <description>Sends information to Share to prepare the ONLYOFFICE Edit Page</description>
     <url>/parashift/onlyoffice/prepare</url>
     <authentication>user</authentication>
 </webscript>
