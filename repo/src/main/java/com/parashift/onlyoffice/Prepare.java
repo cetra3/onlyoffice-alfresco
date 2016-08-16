@@ -33,16 +33,11 @@ public class Prepare extends AbstractWebScript {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    @Autowired
+    OnlyOfficeService onlyOfficeService;
 
     @Autowired
     NodeService nodeService;
-
-    @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    SysAdminParams sysAdminParams;
 
     @Resource(name = "global-properties")
     Properties globalProp;
@@ -58,20 +53,14 @@ public class Prepare extends AbstractWebScript {
             response.setContentType("application/json; charset=utf-8");
             response.setContentEncoding("UTF-8");
 
-            String contentUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/node/content/workspace/SpacesStore/" + nodeRef.getId() + "?alf_ticket=" + authenticationService.getCurrentTicket();
-            String key = nodeRef.getId() + "_" + dateFormat.format(properties.get(ContentModel.PROP_MODIFIED));
-            String callbackUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/callback?nodeRef=" + nodeRef.toString() + "&alf_ticket=" + authenticationService.getCurrentTicket();
+            String contentUrl = onlyOfficeService.getContentUrl(nodeRef);
+            String key =  onlyOfficeService.getKey(nodeRef);
+            String callbackUrl = onlyOfficeService.getCallbackUrl(nodeRef);
 
             JSONObject responseJson = new JSONObject();
             responseJson.put("docUrl", contentUrl);
             responseJson.put("callbackUrl", callbackUrl);
-
-            if(globalProp.containsKey("onlyoffice.url")) {
-                responseJson.put("onlyofficeUrl", globalProp.get("onlyoffice.url"));
-            } else {
-                responseJson.put("onlyofficeUrl", "http://127.0.0.1/");
-            }
-
+            responseJson.put("onlyofficeUrl", onlyOfficeService.getOnlyOfficeUrl());
             responseJson.put("key", key);
             responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 

@@ -9,4 +9,13 @@
 
     <context:component-scan base-package="com.parashift.onlyoffice" />
 
+    <bean id="transformer.onlyoffice"
+          class="com.parashift.onlyoffice.Transform"
+          parent="baseContentTransformer" >
+        <property name="mimetypeService" ref="MimetypeService" />
+        <property name="globalProperties" ref="global-properties" />
+        <property name="onlyofficeService" ref="onlyOfficeService" />
+        <property name="mimetypeService" ref="mimetypeService" />
+    </bean>
+
 </beans>
