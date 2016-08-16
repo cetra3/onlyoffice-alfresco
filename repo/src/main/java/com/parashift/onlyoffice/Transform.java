@@ -1,6 +1,7 @@
 package com.parashift.onlyoffice;
 
 import com.parashift.onlyoffice.conversion.FileResult;
+import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.transform.AbstractContentTransformer2;
 import org.alfresco.service.cmr.repository.*;
 import org.apache.commons.httpclient.HttpStatus;
@@ -17,6 +18,10 @@ import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by cetra on 16/08/2016.
@@ -27,9 +32,25 @@ public class Transform extends AbstractContentTransformer2 {
 
     private OnlyOfficeService onlyOfficeService;
 
-    private MimetypeService mimetypeService;
-
     private Unmarshaller unmarshaller = null;
+
+    private static final Set<String> SOURCE_MIMETYPES = new HashSet<String>() {{
+        add("application/vnd.ms-excel");
+        add("application/vnd.ms-powerpoint");
+        add("application/msword");
+        add("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        add("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+        add("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    }};
+
+    private static final Set<String> TARGET_MIMETYPES = new HashSet<String>() {{
+        add("application/pdf");
+    }};
+
+    @Override
+    public boolean isTransformableMimetype(String sourceMimetype, String targetMimetype, TransformationOptions options) {
+        return SOURCE_MIMETYPES.contains(sourceMimetype) && TARGET_MIMETYPES.contains(targetMimetype);
+    }
 
     @Override
     protected void transformInternal(ContentReader reader, ContentWriter writer, TransformationOptions options) throws Exception {
@@ -38,25 +59,30 @@ public class Transform extends AbstractContentTransformer2 {
             unmarshaller = JAXBContext.newInstance(FileResult.class).createUnmarshaller();
         }
 
-        logger.debug("Received transformation request:{}", options);
+        logger.debug("Received transformation request: {}", options);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             HttpGet request = new HttpGet(getUri(reader, writer, options));
 
-            logger.debug("Sending request to:{}", request.getURI().toString());
+            logger.debug("Sending request to: {}", request.getURI().toString());
 
             try(CloseableHttpResponse response = httpClient.execute(request)) {
 
                 int status = response.getStatusLine().getStatusCode();
 
                 if(status != HttpStatus.SC_OK) {
-                    logger.error("Error converting node:{}, status:{}", options.getSourceNodeRef(), status);
+                    logger.error("Error converting node: {}, status: {}", options.getSourceNodeRef(), status);
                 } else {
 
                     FileResult fileResult = (FileResult) unmarshaller.unmarshal(response.getEntity().getContent());
 
-                    writeUrlToFile(fileResult.getFileUrl(), writer);
+                    if(fileResult.fileUrl != null) {
+                        writeUrlToFile(fileResult.fileUrl, writer);
+                    } else {
+                        logger.error("Problem with result from OnlyOffice: {}", fileResult);
+                    }
+
 
                 }
 
@@ -67,8 +93,7 @@ public class Transform extends AbstractContentTransformer2 {
 
     private void writeUrlToFile(String fileUrl, ContentWriter writer) throws IOException {
 
-        logger.debug("Writing:{} to writer", fileUrl);
-
+        logger.debug("Writing: {} to writer", fileUrl);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(fileUrl);
@@ -77,7 +102,7 @@ public class Transform extends AbstractContentTransformer2 {
                 int status = response.getStatusLine().getStatusCode();
 
                 if(status != HttpStatus.SC_OK) {
-                    logger.error("Error writing Url:{}, status:{}", fileUrl, status);
+                    logger.error("Error writing Url: {}, status: {}", fileUrl, status);
                 } else {
 
                     writer.putContent(response.getEntity().getContent());
@@ -97,8 +122,9 @@ public class Transform extends AbstractContentTransformer2 {
 
         builder.setParameter("key", onlyOfficeService.getKey(options.getSourceNodeRef()));
         builder.setParameter("url", onlyOfficeService.getContentUrl(options.getSourceNodeRef()));
-        builder.setParameter("filetype", mimetypeService.getExtension(reader.getMimetype()));
-        builder.setParameter("outputtype", mimetypeService.getExtension(writer.getMimetype()));
+        builder.setParameter("filetype", getMimetypeService().getExtension(reader.getMimetype()));
+        builder.setParameter("outputtype", getMimetypeService().getExtension(writer.getMimetype()));
+        builder.setParameter("embeddedfonts", "true");
         builder.setParameter("async", "false");
 
         return builder.build();
@@ -109,10 +135,5 @@ public class Transform extends AbstractContentTransformer2 {
         this.onlyOfficeService = onlyOfficeService;
     }
 
-
-    @Override
-    public void setMimetypeService(MimetypeService mimetypeService) {
-        this.mimetypeService = mimetypeService;
-    }
 
 }

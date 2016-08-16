@@ -13,9 +13,7 @@
           class="com.parashift.onlyoffice.Transform"
           parent="baseContentTransformer" >
         <property name="mimetypeService" ref="MimetypeService" />
-        <property name="globalProperties" ref="global-properties" />
-        <property name="onlyofficeService" ref="onlyOfficeService" />
-        <property name="mimetypeService" ref="mimetypeService" />
+        <property name="onlyOfficeService" ref="onlyOfficeService" />
     </bean>
 
 </beans>

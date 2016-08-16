@@ -11,48 +11,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FileResult {
 
     @XmlElement(name = "FileUrl")
-    private String fileUrl;
+    public String fileUrl;
 
     @XmlElement(name = "Percent")
-    private Integer percent;
+    public Integer percent;
 
     @XmlElement(name = "EndConvert")
-    private boolean convertEnded;
+    public boolean convertEnded;
 
     @XmlElement(name = "Error")
-    private Integer error;
-
-    public boolean isConvertEnded() {
-        return convertEnded;
-    }
-
-    public void setConvertEnded(boolean convertEnded) {
-        this.convertEnded = convertEnded;
-    }
-
-    public Integer getError() {
-        return error;
-    }
-
-    public void setError(Integer error) {
-        this.error = error;
-    }
-
-    public String getFileUrl() {
-        return fileUrl;
-    }
-
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
-    }
-
-    public Integer getPercent() {
-        return percent;
-    }
-
-    public void setPercent(Integer percent) {
-        this.percent = percent;
-    }
+    public Integer error;
 
     @Override
     public String toString() {
