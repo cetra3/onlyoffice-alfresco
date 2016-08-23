@@ -44,6 +44,7 @@ public class CallBack extends AbstractWebScript {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
+    @SuppressWarnings("deprecation")
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
 
         logger.debug("Received JSON Callback");
@@ -65,6 +66,7 @@ public class CallBack extends AbstractWebScript {
                 if(lockService.getLockStatus(nodeRef).equals(LockStatus.NO_LOCK)) {
                     logger.debug("Document open for editing, locking document");
                     behaviourFilter.disableBehaviour(nodeRef);
+
                     lockService.lock(nodeRef, LockType.WRITE_LOCK);
                 } else {
                     logger.debug("Document already locked, another user has entered/exited");

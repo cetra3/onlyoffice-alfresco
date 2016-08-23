@@ -1,0 +1,18 @@
+<extension>
+    <modules>
+        <module>
+            <id>Parashift OnlyOffice Preview</id>
+            <version>1.0</version>
+            <auto-deploy>true</auto-deploy>
+            <customizations>
+                <customization>
+                    <targetPackageRoot>org.alfresco.components.preview</targetPackageRoot>
+                    <sourcePackageRoot>com.parashift.onlyoffice.preview-config</sourcePackageRoot>
+                    <dependencies>
+                        <js>/res/components/preview/OnlyOffice.js</js>
+                    </dependencies>
+                </customization>
+            </customizations>
+        </module>
+    </modules>
+</extension>

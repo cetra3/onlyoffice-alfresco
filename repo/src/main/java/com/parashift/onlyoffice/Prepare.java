@@ -2,6 +2,7 @@ package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.admin.SysAdminParams;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -48,24 +49,40 @@ public class Prepare extends AbstractWebScript {
 
             NodeRef nodeRef = new NodeRef(request.getParameter("nodeRef"));
 
-            Map<QName, Serializable> properties = nodeService.getProperties(nodeRef);
+            JSONObject responseJson = new JSONObject();
 
             response.setContentType("application/json; charset=utf-8");
             response.setContentEncoding("UTF-8");
 
-            String contentUrl = onlyOfficeService.getContentUrl(nodeRef);
-            String key =  onlyOfficeService.getKey(nodeRef);
-            String callbackUrl = onlyOfficeService.getCallbackUrl(nodeRef);
+            if(nodeService.exists(nodeRef)) {
+                Map<QName, Serializable> properties = nodeService.getProperties(nodeRef);
 
-            JSONObject responseJson = new JSONObject();
-            responseJson.put("docUrl", contentUrl);
-            responseJson.put("callbackUrl", callbackUrl);
-            responseJson.put("onlyofficeUrl", onlyOfficeService.getOnlyOfficeUrl());
-            responseJson.put("key", key);
-            responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
+                if(properties.containsKey(ContentModel.PROP_CONTENT)) {
 
-            if(globalProp.containsKey("onlyoffice.lang")) {
-                responseJson.put("lang", globalProp.get("onlyoffice.lang"));
+                    String contentUrl = onlyOfficeService.getContentUrl(nodeRef);
+                    String key =  onlyOfficeService.getKey(nodeRef);
+                    String callbackUrl = onlyOfficeService.getCallbackUrl(nodeRef);
+
+                    ContentData contentData = (ContentData) properties.get(ContentModel.PROP_CONTENT);
+
+                    responseJson.put("docUrl", contentUrl);
+                    responseJson.put("callbackUrl", callbackUrl);
+                    responseJson.put("onlyofficeUrl", onlyOfficeService.getOnlyOfficeUrl());
+                    responseJson.put("key", key);
+                    responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
+                    responseJson.put("mimeType", contentData.getMimetype());
+
+                    if(globalProp.containsKey("onlyoffice.lang")) {
+                        responseJson.put("lang", globalProp.get("onlyoffice.lang"));
+                    }
+
+                    responseJson.put("status", "OK");
+                } else {
+                    responseJson.put("status", "Not A File");
+                }
+
+            } else {
+                responseJson.put("status", "Node Not Found");
             }
 
             logger.debug("Sending JSON prepare object");
