@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] 2016-08-23
+
+### Added
+
+* OnlyOffice Web Preview in Alfresco Share
+* OnlyOffice PDF Conversion for Office Documents
+
 ## [1.1.0] 2016-07-20
 
 ### Added

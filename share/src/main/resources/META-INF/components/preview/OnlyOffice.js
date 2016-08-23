@@ -33,20 +33,17 @@
         },
 
         display: function() {
-            console.log(this.wp);
-            console.log(this.attributes);
 
             var docEditor = new DocsAPI.DocEditor(this.wp.id + "-body", this.getAttributes());
 
             this.updateHeight();
 
-            // handle event
+            //Update the height of the document preview
             window.addEventListener("optimizedResize", this.updateHeight.bind(this));
 
         },
 
         updateHeight: function() {
-            console.log("Resize hit!");
             var iFrames = document.getElementById(this.wp.id).getElementsByTagName("iframe");
 
             if(iFrames[0]) {
