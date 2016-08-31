@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.1] 2016-08-31
+
+### Fixed
+
+* Preview for External Share
+
 ## [1.2.0] 2016-08-23
 
 ### Added
