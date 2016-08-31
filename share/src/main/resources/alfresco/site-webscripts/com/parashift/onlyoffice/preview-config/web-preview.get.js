@@ -31,27 +31,39 @@ if (model.widgets)
         if (widget.id == "WebPreview")
         {
 
-            pObj = eval('(' + remote.call("/parashift/onlyoffice/prepare?nodeRef=" + url.args.nodeRef) + ')');
+            if(mimeTypes.indexOf(widget.options.mimeType) != -1) {
 
-            if(pObj.status == "OK" && mimeTypes.indexOf(pObj.mimeType) != -1) {
+                var url;
 
-                model.onlyofficeUrl = pObj.onlyofficeUrl;
-
-                pObj.user = {
-                    userId: user.id,
-                    firstName: user.firstName,
-                    lastName: user.lastName
+                if(model.proxy == "alfresco-noauth") {
+                    url = "/parashift/onlyoffice/prepare-noauth?sharedId=" + model.nodeRef;
+                } else {
+                    url = "/parashift/onlyoffice/prepare?nodeRef=" + model.nodeRef;
                 }
 
-                widget.options.pluginConditions = jsonUtils.toJSONString([{
-                    attributes: {
-                        mimeType: pObj.mimeType
-                    },
-                    plugins: [{
-                        name: "OnlyOffice",
-                        attributes: pObj
-                    }]
-                }]);
+                pObj = eval('(' + remote.connect(model.proxy).get(url) + ')');
+
+                if(pObj.status == "OK") {
+
+                    model.onlyofficeUrl = pObj.onlyofficeUrl;
+
+                    pObj.user = {
+                        userId: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName
+                    }
+
+                    widget.options.pluginConditions = jsonUtils.toJSONString([{
+                        attributes: {
+                            mimeType: pObj.mimeType
+                        },
+                        plugins: [{
+                            name: "OnlyOffice",
+                            attributes: pObj
+                        }]
+                    }]);
+                }
+
             }
 
         }

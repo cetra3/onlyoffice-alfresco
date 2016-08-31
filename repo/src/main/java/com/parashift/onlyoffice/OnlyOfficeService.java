@@ -43,6 +43,11 @@ public class OnlyOfficeService {
         return nodeRef.getId() + "_" + dateFormat.format(properties.get(ContentModel.PROP_MODIFIED));
     }
 
+
+    public String getSharedContentUrl(String sharedId) {
+        return UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/internal/shared/node/" + sharedId + "/content";
+    }
+
     public String getContentUrl(NodeRef nodeRef) {
         return  UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/node/content/workspace/SpacesStore/" + nodeRef.getId() + "?alf_ticket=" + authenticationService.getCurrentTicket();
     }

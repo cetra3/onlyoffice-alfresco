@@ -46,8 +46,10 @@
         updateHeight: function() {
             var iFrames = document.getElementById(this.wp.id).getElementsByTagName("iframe");
 
+            var height = this.wp.options.proxy == "alfresco-noauth" ? 260 : 200;
+
             if(iFrames[0]) {
-                iFrames[0].style.height = (window.innerHeight - 200) + "px";
+                iFrames[0].style.height = (window.innerHeight - height) + "px";
             }
 
         },
