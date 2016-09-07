@@ -55,4 +55,13 @@
        </property>
     </bean>
 
+    <bean id="evaluator.doclib.action.isLockedByMSOffice" parent="evaluator.doclib.action.value">
+        <property name="accessor" value="node.properties.cm:lockLifetime" />
+        <property name="comparator">
+            <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
+                <property name="value" value="EPHEMERAL" />
+            </bean>
+        </property>
+    </bean>
+
 </beans>
