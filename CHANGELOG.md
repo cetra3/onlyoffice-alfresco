@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.2] 2016-09-09
+
+### Fixed
+
+* The `Edit in OnlyOffice` action appears only if the document is unlocked or currently being edited inside onlyoffice.  This prevents the action showing if it's locked by something external (I.e, edit offline or edit in microsoft).
+
 ## [1.2.1] 2016-08-31
 
 ### Fixed
