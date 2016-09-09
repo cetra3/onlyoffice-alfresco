@@ -55,13 +55,31 @@
        </property>
     </bean>
 
-    <bean id="evaluator.doclib.action.isLockedByMSOffice" parent="evaluator.doclib.action.value">
-        <property name="accessor" value="node.properties.cm:lockLifetime" />
-        <property name="comparator">
-            <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
-                <property name="value" value="EPHEMERAL" />
-            </bean>
-        </property>
+    <bean id="evaluator.doclib.action.notLocked" parent="evaluator.doclib.action.chainedMatchOne">
+       <property name="evaluators">
+          <list>
+             <ref bean="evaluator.doclib.metadata.isLocked" />
+             <ref bean="evaluator.doclib.action.isWorkingCopy" />
+          </list>
+       </property>
+       <property name="negateOutput" value="true" />
+    </bean>
+
+    <bean id="evaluator.doclib.action.onlyofficeCurrentlyEditing" class="org.alfresco.web.evaluator.HasAspectEvaluator">
+       <property name="aspects">
+          <list>
+             <value>oo:currentlyEditing</value>
+          </list>
+       </property>
+    </bean>
+
+    <bean id="evaluator.doclib.action.onlyofficeEditable" parent="evaluator.doclib.action.chainedMatchOne">
+       <property name="evaluators">
+          <list>
+             <ref bean="evaluator.doclib.action.notLocked" />
+             <ref bean="evaluator.doclib.action.onlyofficeCurrentlyEditing" />
+          </list>
+       </property>
     </bean>
 
 </beans>

@@ -16,4 +16,20 @@
         <property name="onlyOfficeService" ref="onlyOfficeService" />
     </bean>
 
+    <bean id="onlyofficeModelBootstrap" class="org.alfresco.repo.dictionary.DictionaryBootstrap" init-method="bootstrap"
+          depends-on="resourceBundles">
+        <property name="dictionaryDAO">
+            <ref bean="dictionaryDAO"/>
+        </property>
+        <property name="tenantService">
+            <ref bean="tenantService"/>
+        </property>
+        <property name="models">
+            <list>
+                <value>alfresco/model/onlyofficeModel.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
 </beans>

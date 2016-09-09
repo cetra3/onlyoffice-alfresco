@@ -9,7 +9,7 @@
                     <permission allow="true">Write</permission>
                 </permissions>
                 <evaluator>evaluator.doclib.action.onlyofficeEditMimetype</evaluator>
-                <evaluator negate="true">evaluator.doclib.action.isLockedByMSOffice</evaluator>
+                <evaluator>evaluator.doclib.action.onlyofficeEditable</evaluator>
             </action>
         </actions>
         <actionGroups>
@@ -21,6 +21,5 @@
             </actionGroup>
         </actionGroups>
     </config>
-
 
 </alfresco-config>
