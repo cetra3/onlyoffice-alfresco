@@ -7,6 +7,8 @@ import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.namespace.QName;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -22,9 +24,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.Writer;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 
 /**
  * Created by cetra on 20/10/15.
@@ -34,6 +38,9 @@ public class CallBack extends AbstractWebScript {
 
     @Autowired
     LockService lockService;
+
+    @Autowired
+    NodeService nodeService;
 
     @Resource(name = "policyBehaviourFilter")
     BehaviourFilter behaviourFilter;
@@ -61,12 +68,16 @@ public class CallBack extends AbstractWebScript {
             case 0:
                 logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
                 lockService.unlock(nodeRef);
+                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
                 break;
             case 1:
-                if(lockService.getLockStatus(nodeRef).equals(LockStatus.NO_LOCK)) {
+                if(!nodeService.hasAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING)) {
                     logger.debug("Document open for editing, locking document");
+
+                    //We don't want to update the modification dates so we disable any behaviour
                     behaviourFilter.disableBehaviour(nodeRef);
 
+                    nodeService.addAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING, new HashMap<QName, Serializable>());
                     lockService.lock(nodeRef, LockType.WRITE_LOCK);
                 } else {
                     logger.debug("Document already locked, another user has entered/exited");
@@ -75,15 +86,18 @@ public class CallBack extends AbstractWebScript {
             case 2:
                 logger.debug("Document Updated, changing content");
                 lockService.unlock(nodeRef);
+                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
                 updateNode(nodeRef, callBackJSon.getString("url"));
                 break;
             case 3:
                 logger.error("ONLYOFFICE has reported that saving the document has failed");
                 lockService.unlock(nodeRef);
+                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
                 break;
             case 4:
                 logger.debug("No document updates, unlocking node");
                 lockService.unlock(nodeRef);
+                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
                 break;
         }
 
@@ -93,7 +107,6 @@ public class CallBack extends AbstractWebScript {
             responseJson.put("error", 0);
             responseJson.write(responseWriter);
         }
-
     }
 
     private void updateNode(NodeRef nodeRef, String url) {

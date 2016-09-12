@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- xsi:schemaLocation="http://www.alfresco.org/model/dictionary/1.0 modelSchema.xsd" -->
+<model name="oo:model"
+       xmlns="http://www.alfresco.org/model/dictionary/1.0"
+>
+
+    <description>OnlyOffice Content Model</description>
+    <author>Peter Lesty</author>
+    <published>2016-09-09</published>
+    <version>1.0</version>
+
+    <namespaces>
+        <!-- describe meta data objects under namespace -->
+        <namespace uri="http://www.parashift.com.au/model/doc/onlyoffice/1.0" prefix="oo"/>
+    </namespaces>
+    <aspects>
+        <aspect name="oo:currentlyEditing">
+            <title>Currently Editing in OnlyOffice</title>
+        </aspect>
+   </aspects>
+</model>
