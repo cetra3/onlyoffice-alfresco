@@ -65,7 +65,11 @@ The easiest way to start an instance of ONLYOFFICE is to use Docker: https://git
   onlyoffice.lang=en
   ```
 
+* (Optional) set another URL to use for PDF transformations.  By default when converting files to PDF it will use the `onlyoffice.url`:
 
+  ```
+  onlyoffice.transform.url=http://documentserver/
+  ```
 
 ## How it works
 

@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.2.3] 2016-11-22
+
+### Changed
+
+* Modification Date is updated if the document is locked (Alfstream Compatibility)
+
+### Added
+
+* Global property for the PDF transform url, which can be seperate from the editor URL: `onlyoffice.transform.url`
+
 ## [1.2.2] 2016-09-09
 
 ### Fixed
