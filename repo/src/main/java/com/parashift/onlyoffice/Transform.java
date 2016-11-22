@@ -118,7 +118,7 @@ public class Transform extends AbstractContentTransformer2 {
 
     private URI getUri(ContentReader reader, ContentWriter writer, TransformationOptions options) throws URISyntaxException {
 
-        URIBuilder builder = new URIBuilder(onlyOfficeService.getOnlyOfficeUrl() + "/ConvertService.ashx");
+        URIBuilder builder = new URIBuilder(onlyOfficeService.getOnlyOfficeTransformUrl() + "/ConvertService.ashx");
 
         builder.setParameter("key", onlyOfficeService.getKey(options.getSourceNodeRef()));
         builder.setParameter("url", onlyOfficeService.getContentUrl(options.getSourceNodeRef()));

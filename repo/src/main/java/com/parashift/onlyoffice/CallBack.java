@@ -74,9 +74,6 @@ public class CallBack extends AbstractWebScript {
                 if(!nodeService.hasAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING)) {
                     logger.debug("Document open for editing, locking document");
 
-                    //We don't want to update the modification dates so we disable any behaviour
-                    behaviourFilter.disableBehaviour(nodeRef);
-
                     nodeService.addAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING, new HashMap<QName, Serializable>());
                     lockService.lock(nodeRef, LockType.WRITE_LOCK);
                 } else {

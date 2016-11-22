@@ -56,6 +56,15 @@ public class OnlyOfficeService {
         return UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/callback?nodeRef=" + nodeRef.toString() + "&alf_ticket=" + authenticationService.getCurrentTicket();
     }
 
+    public String getOnlyOfficeTransformUrl() {
+
+        if(globalProp.containsKey("onlyoffice.transform.url")) {
+            return (String) globalProp.get("onlyoffice.transform.url");
+        } else {
+            return getOnlyOfficeUrl();
+        }
+    }
+
     public String getOnlyOfficeUrl() {
 
         if(globalProp.containsKey("onlyoffice.url")) {
