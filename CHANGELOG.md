@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.4] 2016-11-23
+
+### Fixed
+
+* Mime types can't be previewed in OnlyOffice
+
+### Changed
+
+* Lock banner messages now allow user to distinguish the document is locked by OnlyOffice or other program in document library
 
 ## [1.2.3] 2016-11-22
 
