@@ -54,12 +54,12 @@
 
         },
 
-        getDocumentType: function(ext) {
-            if (".docx.doc.odt.rtf.txt.html.htm.mht.pdf.djvu.fb2.epub.xps".indexOf(ext) != -1) return "text";
-            if (".xls.xlsx.ods.csv".indexOf(ext) != -1) return "spreadsheet";
-            if (".pps.ppsx.ppt.pptx.odp".indexOf(ext) != -1) return "presentation";
+        /*getDocumentType: function(ext) {
+            if (".docm.dotm.docx.doc.odt.rtf.txt.html.htm.mht.pdf.djvu.fb2.epub.xps".indexOf(ext) != -1) return "text";
+            if (".xlsm.xltm.xlam.xlsb.xls.xlsx.ods.csv".indexOf(ext) != -1) return "spreadsheet";
+            if (".pptm.potm.ppsm.ppam.sldm.pps.ppsx.ppt.pptx.odp".indexOf(ext) != -1) return "presentation";
             return null;
-        },
+        },*/
 
         getAttributes: function() {
 
@@ -74,7 +74,7 @@
                 document: {
                     title: docName,
                     url: this.attributes.docUrl,
-                    fileType: docType,
+                    fileType: translateDocumentType(docType),
                     key: this.attributes.key,
                     permissions: {
                         edit: true

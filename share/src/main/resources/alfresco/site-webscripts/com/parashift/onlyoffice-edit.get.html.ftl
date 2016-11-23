@@ -33,7 +33,7 @@
         document: {
             title: docName,
             url: "${docUrl}",
-            fileType: docType,
+            fileType: translateDocumentType(docType),
             key: "${key}",
             permissions: {
                 edit: true
