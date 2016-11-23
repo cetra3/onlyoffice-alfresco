@@ -22,4 +22,28 @@
         </actionGroups>
     </config>
 
+    <config evaluator="string-compare" condition="DocumentLibrary">
+        <metadata-templates>
+            <!-- Record Category -->
+            <template id="ooEditingItem">
+                <evaluator>evaluator.doclib.action.onlyofficeCurrentlyEditing</evaluator>
+                <!--Default template of document library-->
+                <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{ooLockBanner}</banner>
+                <banner index="20" id="syncTransientError" evaluator="evaluator.doclib.metadata.hasSyncTransientErrorBanner">{syncTransientError}</banner>
+                <banner index="30" id="syncFailed" evaluator="evaluator.doclib.metadata.hasSyncFailedBanner">{syncFailed}</banner>
+                <line index="10" id="date">{date}{size}</line>
+                <line index="20" id="description" view="detailed">{description}</line>
+                <line index="30" id="tags" view="detailed">{tags}</line>
+                <line index="40" id="categories" view="detailed" evaluator="evaluator.doclib.metadata.hasCategories">{categories}</line>
+                <line index="50" id="social" view="detailed">{social}</line>
+            </template>
+        </metadata-templates>
+    </config>
+
+    <config evaluator="string-compare" condition="DocLibCustom">
+        <dependencies>
+            <js src="/components/metadata/template/onlyoffice-lockbanner.js" />
+        </dependencies>
+    </config>
+
 </alfresco-config>
