@@ -23,7 +23,7 @@ var getDocumentType = function(ext) {
 
 var translateDocumentType = function(docType) {
     if (".xltx.xlsm.xltm.xlam.xlsb".indexOf(docType) != -1) return "xlsx";
-    if (".docm.dotm.dotx".indexOf(docType) != -1) return "docx";
+    if (".dotx.docm.dotm".indexOf(docType) != -1) return "docx";
     if (".potx.pptm.potm.ppsm.ppam.sldm".indexOf(docType) != -1) return "pptx";
     return docType;
 };
