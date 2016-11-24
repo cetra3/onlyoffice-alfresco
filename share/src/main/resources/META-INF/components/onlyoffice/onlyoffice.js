@@ -9,7 +9,7 @@ function key(k) {
 
 /*var getDocumentType = function (ext) {
     if (".docx.doc.odt.rtf.txt.html.htm.mht.pdf.djvu.fb2.epub.xps".indexOf(ext) != -1) return "text";
-    if (".xlsm.xls.xlsx.ods.csv".indexOf(ext) != -1) return "spreadsheet";
+    if (".xls.xlsx.ods.csv".indexOf(ext) != -1) return "spreadsheet";
     if (".pps.ppsx.ppt.pptx.odp".indexOf(ext) != -1) return "presentation";
     return null;
 };*/
