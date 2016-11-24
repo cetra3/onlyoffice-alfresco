@@ -9,7 +9,7 @@
      * Alfresco Slingshot aliases
      */
     var $html = Alfresco.util.encodeHTML,
-        $isValueSet = Alfresco.util.isValueSet;
+        $isValueSet = Alfresco.util.isValueSet,
         $combine = Alfresco.util.combinePaths,
         $siteURL = Alfresco.util.siteURL,
         $userProfile = Alfresco.util.userProfileLink;

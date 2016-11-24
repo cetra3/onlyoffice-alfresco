@@ -20,7 +20,7 @@ var mimeTypes = [
     "application/vnd.ms-powerpoint.template.macroenabled.12",
     "application/vnd.ms-powerpoint.slideshow.macroenabled.12",
     "application/vnd.ms-powerpoint.addin.macroenabled.12",
-    "application/vnd.ms-powerpoint.slide.macroenabled.12",
+    "application/vnd.ms-powerpoint.slide.macroenabled.12"
 ]
 
 if (model.widgets)
