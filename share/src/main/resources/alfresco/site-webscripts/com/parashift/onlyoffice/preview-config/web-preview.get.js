@@ -15,7 +15,7 @@ var mimeTypes = [
     "application/vnd.ms-excel.sheet.macroenabled.12",
     "application/vnd.ms-excel.template.macroenabled.12",
     "application/vnd.ms-excel.addin.macroenabled.12",
-    "application/vnd.ms-excel.sheet.binary.macroenabled.12"
+    "application/vnd.ms-excel.sheet.binary.macroenabled.12",
     "application/vnd.ms-powerpoint.presentation.macroenabled.12",
     "application/vnd.ms-powerpoint.template.macroenabled.12",
     "application/vnd.ms-powerpoint.slideshow.macroenabled.12",
