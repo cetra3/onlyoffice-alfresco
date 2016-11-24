@@ -49,9 +49,21 @@
                         <#assign lockedByLink = userProfileLink(lockUser.userName, lockUser.displayName, 'class="theme-color-1"') >
                         <#if lockUser.userName == user.name>
                            <#assign status><#if node.isLocked>lock-owner<#else>editing</#if></#assign>
-                           <span class="${status}">${msg("onlyoffice.banner." + status)}</span>
+                           <#if editInOnlyOffice>
+                              <span class="${status}">${msg("onlyoffice.banner." + status)}</span>
+                           <#else>
+                              <span class="${status}">${msg("banner." + status)}</span>
+                           </#if>
                         <#else>
-                           <span class="locked">${msg("onlyoffice.banner.locked", lockedByLink) + msg("onlyoffice.banner.locked", lockedByLink)}</span>
+                           <#if editInOnlyOffice>
+                              <#if hasWritePermission>
+                                 <span class="locked">${msg("onlyoffice.banner.locked.editable", lockedByLink, editInOnlyOfficeLink)}</span>
+                              <#else>
+                                 <span class="locked">${msg("onlyoffice.banner.locked", lockedByLink)}</span>
+                              </#if>
+                           <#else>
+                              <span class="locked">${msg("banner.locked", lockedByLink)}</span>
+                           </#if>
                         </#if>
                         </div>
                      </#if>
@@ -61,9 +73,21 @@
                         <div class="status-banner theme-bg-color-2 theme-border-4">
                         <#assign lockedByLink = userProfileLink(lockUser.userName, lockUser.displayName, 'class="theme-color-1"') >
                         <#if lockUser.userName == user.name>
-                           <span class="lock-owner">${msg("onlyoffice.banner.lock-owner")}</span>
+                           <#if editInOnlyOffice>
+                              <span class="lock-owner">${msg("onlyoffice.banner.lock-owner")}</span>
+                           <#else>
+                              <span class="lock-owner">${msg("banner.lock-owner")}</span>
+                           </#if>
                         <#else>
-                           <span class="locked">${msg("onlyoffice.banner.locked", lockedByLink) + msg("onlyoffice.banner.locked", lockedByLink)}</span>
+                           <#if editInOnlyOffice>
+                              <#if hasWritePermission>
+                                <span class="locked">${msg("onlyoffice.banner.locked.editable", lockedByLink, editInOnlyOfficeLink)}</span>
+                              <#else>
+                                <span class="locked">${msg("onlyoffice.banner.locked", lockedByLink)}</span>
+                              </#if>
+                           <#else>
+                              <span class="locked">${msg("banner.locked", lockedByLink)}</span>
+                           </#if>
                         </#if>
                         </div>
                      </#if>

@@ -16,14 +16,17 @@ function key(k) {
 
 var getDocumentType = function(ext) {
     if (".dotx.docm.dotm.docx.doc.odt.rtf.txt.html.htm.mht.pdf.djvu.fb2.epub.xps".indexOf(ext) != -1) return "text";
-    if (".xltx.xlsm.xltm.xlam.xlsb.xls.xlsx.ods.csv".indexOf(ext) != -1) return "spreadsheet";
+    if (".xltx.xlsm.xltm.xlam.xls.xlsx.ods.csv".indexOf(ext) != -1) return "spreadsheet";
     if (".potx.pptm.potm.ppsm.ppam.sldm.pps.ppsx.ppt.pptx.odp".indexOf(ext) != -1) return "presentation";
     return null;
 };
 
 var translateDocumentType = function(docType) {
-    if (".xltx.xlsm.xltm.xlam.xlsb".indexOf(docType) != -1) return "xlsx";
+    if (".xltx.xlsm.xltm.xlam".indexOf(docType) != -1) return "xlsx";
     if (".dotx.docm.dotm".indexOf(docType) != -1) return "docx";
     if (".potx.pptm.potm.ppsm.ppam.sldm".indexOf(docType) != -1) return "pptx";
+    if (".dot".indexOf(docType) != -1) return "doc";
+    if (".xlt.xla".indexOf(docType) != -1) return "xls";
+    if (".pot.ppa".indexOf(docType) != -1) return "ppt";
     return docType;
 };
