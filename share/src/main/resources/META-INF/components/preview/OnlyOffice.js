@@ -34,12 +34,21 @@
 
         display: function() {
 
-            var docEditor = new DocsAPI.DocEditor(this.wp.id + "-body", this.getAttributes());
+            var aboveThreshold = this.attributes.abovePreviewThreshold;
+            if (aboveThreshold) {
+                var messageAbovePreviewThreshold = Alfresco.messages.global["label.onlyoffice.abovePreviewThreshold"];
+                if (!messageAbovePreviewThreshold) {
+                    messageAbovePreviewThreshold = "The document can't be previewed as it's above preview threshold";
+                }
+                return '<div class="message">' + messageAbovePreviewThreshold + '</div>';
+            } else {
+                var docEditor = new DocsAPI.DocEditor(this.wp.id + "-body", this.getAttributes());
+                console.log(docEditor);
+                this.updateHeight();
 
-            this.updateHeight();
-
-            //Update the height of the document preview
-            window.addEventListener("optimizedResize", this.updateHeight.bind(this));
+                //Update the height of the document preview
+                window.addEventListener("optimizedResize", this.updateHeight.bind(this));
+            }
 
         },
 

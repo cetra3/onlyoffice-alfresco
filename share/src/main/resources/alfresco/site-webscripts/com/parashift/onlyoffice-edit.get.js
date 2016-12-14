@@ -4,6 +4,7 @@ model.docTitle = pObj.docTitle;
 model.docUrl = pObj.docUrl;
 model.key = pObj.key;
 model.onlyofficeUrl = pObj.onlyofficeUrl;
+model.abovePreviewThreshold = pObj.abovePreviewThreshold;
 
 if(pObj.lang) {
   model.lang = pObj.lang;
