@@ -119,27 +119,36 @@ public class Prepare extends AbstractWebScript {
             Integer pptxMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.pptx.threshold", "1000"));
             Integer pptMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.ppt.threshold", "1000"));
 
-            logger.debug("Thresholds: {}, {}, {}, {}, {}, {}", docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
+            logger.debug("Thresholds: docx: {}, doc: {}, xlsx: {}, xls: {}, pptx: {}, ppt: {}", docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
 
             ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
             try {
                 switch (mimeType) {
+                    case MimetypeMap.MIMETYPE_OPENXML_WORD_TEMPLATE:
+                    case MimetypeMap.MIMETYPE_OPENXML_WORD_TEMPLATE_MACRO:
+                    case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING_MACRO:
                     case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING:
                         XWPFDocument docx = new XWPFDocument(contentReader.getContentInputStream());
-                        result = docx.getBodyElements().size() > docxMaxParagraph;
+                        int paragraphNum = docx.getBodyElements().size();
+                        logger.debug("DOCX paragraph number is: {}", paragraphNum);
+                        result = paragraphNum > docxMaxParagraph;
                         break;
                     case MimetypeMap.MIMETYPE_WORD:
                         HWPFDocument doc = new HWPFDocument(contentReader.getContentInputStream());
-                        result = doc.getSummaryInformation().getPageCount() > docMaxPage;
+                        int pageCount = doc.getSummaryInformation().getPageCount();
+                        logger.debug("DOC page count is: {}", pageCount);
+                        result = pageCount > docMaxPage;
                         break;
+                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE:
+                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE_MACRO:
+                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_MACRO:
                     case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET:
                         XSSFWorkbook xlsx = new XSSFWorkbook(contentReader.getContentInputStream());
                         Integer totalRows = 0;
                         for (int i = 0; i < xlsx.getNumberOfSheets(); i++){
                             XSSFSheet sheet = xlsx.getSheetAt(i);
-                            logger.debug("PhysicalNumberOfRows: {}", sheet.getPhysicalNumberOfRows());
                             totalRows += sheet.getPhysicalNumberOfRows();
-                            logger.debug("totalRows: {}", totalRows);
+                            logger.debug("XLSX totalRows: {}", totalRows);
                             if (result = totalRows > xlsxMaxRows) {
                                 break;
                             }
@@ -151,18 +160,28 @@ public class Prepare extends AbstractWebScript {
                         for (int i = 0; i < xls.getNumberOfSheets(); i++) {
                             HSSFSheet sheet = xls.getSheetAt(i);
                             xlsTotalRows += sheet.getPhysicalNumberOfRows();
+                            logger.debug("XLS totalRows: {}", xlsTotalRows);
                             if (result = xlsTotalRows > xlsMaxRows) {
                                 break;
                             }
                         }
                         break;
+                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_TEMPLATE:
+                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_TEMPLATE_MACRO:
+                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_SLIDESHOW:
+                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_SLIDESHOW_MACRO:
+                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_MACRO:
                     case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION:
                         XMLSlideShow pptx = new XMLSlideShow(contentReader.getContentInputStream());
-                        result = pptx.getSlides().length > pptxMaxSlides;
+                        int slidesNum = pptx.getSlides().length;
+                        logger.debug("PPTX slides number is: {}", slidesNum);
+                        result = slidesNum > pptxMaxSlides;
                         break;
                     case MimetypeMap.MIMETYPE_PPT:
                         HSLFSlideShow ppt = new HSLFSlideShow(contentReader.getContentInputStream());
-                        result = ppt.getDocumentSummaryInformation().getSlideCount() > pptMaxSlides;
+                        int slidesCount = ppt.getDocumentSummaryInformation().getSlideCount();
+                        logger.debug("PPT slides count is: {}", slidesCount);
+                        result = slidesCount > pptMaxSlides;
                     default:
                         break;
                 }
@@ -179,9 +198,10 @@ public class Prepare extends AbstractWebScript {
 //        HSSFWorkbook xls = new HSSFWorkbook(file);
 //        HSSFSheet sheet = xls.getSheetAt(0);
 //        System.out.println(sheet.getPhysicalNumberOfRows());
-        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/fixed (1).xlsx"));
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
+//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/fixed (1).xlsx"));
+//        XSSFWorkbook workbook = new XSSFWorkbook(file);
+//        XSSFSheet sheet = workbook.getSheetAt(0);
+//        System.out.println(sheet.getPhysicalNumberOfRows());
 //        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/AAARTest.docx"));
 //        XWPFDocument xwpfDocument = new XWPFDocument(file);
 //        System.out.println(xwpfDocument.getBodyElements().size());
@@ -194,7 +214,9 @@ public class Prepare extends AbstractWebScript {
 //        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/Nunku.doc"));
 //        HWPFDocument doc = new HWPFDocument(file);
 //        System.out.print(doc.getSummaryInformation().getPageCount());
-
-
+        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/Test (1).xltx"));
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        System.out.println(sheet.getPhysicalNumberOfRows());
     }
 }
