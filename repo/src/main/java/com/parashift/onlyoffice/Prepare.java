@@ -1,13 +1,9 @@
 package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.repository.*;
-import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.UrlUtil;
-import org.apache.batik.util.MimeTypeConstants;
 import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,7 +12,6 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.tika.mime.MimeTypes;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +21,6 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
-import javax.activation.MimeType;
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.Map;
@@ -193,30 +187,4 @@ public class Prepare extends AbstractWebScript {
         return result;
     }
 
-    public static void main(String[] args) throws Exception {
-//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/SOPRegister.xls"));
-//        HSSFWorkbook xls = new HSSFWorkbook(file);
-//        HSSFSheet sheet = xls.getSheetAt(0);
-//        System.out.println(sheet.getPhysicalNumberOfRows());
-//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/fixed (1).xlsx"));
-//        XSSFWorkbook workbook = new XSSFWorkbook(file);
-//        XSSFSheet sheet = workbook.getSheetAt(0);
-//        System.out.println(sheet.getPhysicalNumberOfRows());
-//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/AAARTest.docx"));
-//        XWPFDocument xwpfDocument = new XWPFDocument(file);
-//        System.out.println(xwpfDocument.getBodyElements().size());
-//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/Collaboration Presentation PPT.pptx"));
-//        XMLSlideShow ppt = new XMLSlideShow(file);
-//        System.out.println(ppt.getSlides().length);
-//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/TECH Presentation.ppt"));
-//        HSLFSlideShow ppt = new HSLFSlideShow(file);
-//        System.out.println(ppt.getDocumentSummaryInformation().getSlideCount());
-//        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/Nunku.doc"));
-//        HWPFDocument doc = new HWPFDocument(file);
-//        System.out.print(doc.getSummaryInformation().getPageCount());
-        FileInputStream file = new FileInputStream(new File("/home/zhi/Downloads/Test (1).xltx"));
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
-        System.out.println(sheet.getPhysicalNumberOfRows());
-    }
 }
