@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.5] 2016-12-14
+
+### Changed
+
+* Documents that are above preview thresholds will no longer be previewed in Share
+* Thresholds value can be set accordingly in alfresco-global.properties
+
 ## [1.2.4] 2016-11-23
 
 ### Fixed
