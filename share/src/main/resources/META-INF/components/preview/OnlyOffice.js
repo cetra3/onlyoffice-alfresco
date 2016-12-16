@@ -38,12 +38,11 @@
             if (aboveThreshold) {
                 var messageAbovePreviewThreshold = Alfresco.messages.global["label.onlyoffice.abovePreviewThreshold"];
                 if (!messageAbovePreviewThreshold) {
-                    messageAbovePreviewThreshold = "The document can't be previewed as it's above preview threshold";
+                    messageAbovePreviewThreshold = "This document is above the preview threshold and is too large to display in the browser.";
                 }
                 return '<div class="message">' + messageAbovePreviewThreshold + '</div>';
             } else {
                 var docEditor = new DocsAPI.DocEditor(this.wp.id + "-body", this.getAttributes());
-                console.log(docEditor);
                 this.updateHeight();
 
                 //Update the height of the document preview
