@@ -38,7 +38,7 @@
             if (aboveThreshold) {
                 var messageAbovePreviewThreshold = Alfresco.messages.global["label.onlyoffice.abovePreviewThreshold"];
                 if (!messageAbovePreviewThreshold) {
-                    messageAbovePreviewThreshold = "This document is above the preview threshold and is too large to display in the browser.";
+                    messageAbovePreviewThreshold = "This document is above the preview threshold and is too large to display in the browser. It is available for editing or downloading.";
                 }
                 return '<div class="message">' + messageAbovePreviewThreshold + '</div>';
             } else {
