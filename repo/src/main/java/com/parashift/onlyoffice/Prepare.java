@@ -102,109 +102,119 @@ public class Prepare extends AbstractWebScript {
 
     private boolean checkAbovePreviewThreshold(NodeRef nodeRef, ContentData contentDate) {
         boolean result = false;
-        String mimeType = contentDate.getMimetype();
+        Long documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
+        Long documentSize = contentDate.getSize();
 
-        if (mimeType != null) {
+        if (documentSize > documentMaxSize) {
+            logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
+            result = true;
+        }
 
-            Integer docxMaxParagraph = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.docx.threshold", "0"));
-            Integer docMaxPage = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.doc.threshold", "0"));
-            Integer xlsxMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xlsx.threshold", "0"));
-            Integer xlsMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xls.threshold", "0"));
-            Integer pptxMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.pptx.threshold", "0"));
-            Integer pptMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.ppt.threshold", "0"));
+        if (!result) {
+            String mimeType = contentDate.getMimetype();
 
-            logger.debug("Thresholds: docx: {}, doc: {}, xlsx: {}, xls: {}, pptx: {}, ppt: {}", docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
+            if (mimeType != null) {
 
-            ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
-            try {
-                switch (mimeType) {
-                    case MimetypeMap.MIMETYPE_OPENXML_WORD_TEMPLATE:
-                    case MimetypeMap.MIMETYPE_OPENXML_WORD_TEMPLATE_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING:
-                        if (docxMaxParagraph > 0) {
-                            try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                XWPFDocument docx = new XWPFDocument(inputStream);
-                                int paragraphNum = docx.getBodyElements().size();
-                                logger.debug("DOCX paragraph number is: {}", paragraphNum);
-                                result = paragraphNum > docxMaxParagraph;
+                Integer docxMaxParagraph = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.docx.threshold", "0"));
+                Integer docMaxPage = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.doc.threshold", "0"));
+                Integer xlsxMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xlsx.threshold", "0"));
+                Integer xlsMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xls.threshold", "0"));
+                Integer pptxMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.pptx.threshold", "0"));
+                Integer pptMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.ppt.threshold", "0"));
+
+                logger.debug("Thresholds: docx: {}, doc: {}, xlsx: {}, xls: {}, pptx: {}, ppt: {}", docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
+
+                ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
+                try {
+                    switch (mimeType) {
+                        case MimetypeMap.MIMETYPE_OPENXML_WORD_TEMPLATE:
+                        case MimetypeMap.MIMETYPE_OPENXML_WORD_TEMPLATE_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING:
+                            if (docxMaxParagraph > 0) {
+                                try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    XWPFDocument docx = new XWPFDocument(inputStream);
+                                    int paragraphNum = docx.getBodyElements().size();
+                                    logger.debug("DOCX paragraph number is: {}", paragraphNum);
+                                    result = paragraphNum > docxMaxParagraph;
+                                }
                             }
-                        }
-                        break;
-                    case MimetypeMap.MIMETYPE_WORD:
-                        if (docMaxPage > 0) {
-                            try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                HWPFDocument doc = new HWPFDocument(inputStream);
-                                int pageCount = doc.getSummaryInformation().getPageCount();
-                                logger.debug("DOC page count is: {}", pageCount);
-                                result = pageCount > docMaxPage;
+                            break;
+                        case MimetypeMap.MIMETYPE_WORD:
+                            if (docMaxPage > 0) {
+                                try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    HWPFDocument doc = new HWPFDocument(inputStream);
+                                    int pageCount = doc.getSummaryInformation().getPageCount();
+                                    logger.debug("DOC page count is: {}", pageCount);
+                                    result = pageCount > docMaxPage;
+                                }
                             }
-                        }
-                        break;
-                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE:
-                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET:
-                        if (xlsxMaxRows > 0) {
-                            try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                XSSFWorkbook xlsx = new XSSFWorkbook(inputStream);
-                                Integer totalRows = 0;
-                                for (int i = 0; i < xlsx.getNumberOfSheets(); i++) {
-                                    XSSFSheet sheet = xlsx.getSheetAt(i);
-                                    totalRows += sheet.getPhysicalNumberOfRows();
-                                    logger.debug("XLSX totalRows: {}", totalRows);
-                                    if (result = totalRows > xlsxMaxRows) {
-                                        break;
+                            break;
+                        case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE:
+                        case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET:
+                            if (xlsxMaxRows > 0) {
+                                try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    XSSFWorkbook xlsx = new XSSFWorkbook(inputStream);
+                                    Integer totalRows = 0;
+                                    for (int i = 0; i < xlsx.getNumberOfSheets(); i++) {
+                                        XSSFSheet sheet = xlsx.getSheetAt(i);
+                                        totalRows += sheet.getPhysicalNumberOfRows();
+                                        logger.debug("XLSX totalRows: {}", totalRows);
+                                        if (result = totalRows > xlsxMaxRows) {
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        break;
-                    case MimetypeMap.MIMETYPE_EXCEL:
-                        if (xlsMaxRows > 0) {
-                            try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                HSSFWorkbook xls = new HSSFWorkbook(inputStream);
-                                Integer xlsTotalRows = 0;
-                                for (int i = 0; i < xls.getNumberOfSheets(); i++) {
-                                    HSSFSheet sheet = xls.getSheetAt(i);
-                                    xlsTotalRows += sheet.getPhysicalNumberOfRows();
-                                    logger.debug("XLS totalRows: {}", xlsTotalRows);
-                                    if (result = xlsTotalRows > xlsMaxRows) {
-                                        break;
+                            break;
+                        case MimetypeMap.MIMETYPE_EXCEL:
+                            if (xlsMaxRows > 0) {
+                                try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    HSSFWorkbook xls = new HSSFWorkbook(inputStream);
+                                    Integer xlsTotalRows = 0;
+                                    for (int i = 0; i < xls.getNumberOfSheets(); i++) {
+                                        HSSFSheet sheet = xls.getSheetAt(i);
+                                        xlsTotalRows += sheet.getPhysicalNumberOfRows();
+                                        logger.debug("XLS totalRows: {}", xlsTotalRows);
+                                        if (result = xlsTotalRows > xlsMaxRows) {
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        break;
-                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_TEMPLATE:
-                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_TEMPLATE_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_SLIDESHOW:
-                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_SLIDESHOW_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_MACRO:
-                    case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION:
-                        if (pptxMaxSlides > 0) {
-                            try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                XMLSlideShow pptx = new XMLSlideShow(inputStream);
-                                int slidesNum = pptx.getSlides().length;
-                                logger.debug("PPTX slides number is: {}", slidesNum);
-                                result = slidesNum > pptxMaxSlides;
+                            break;
+                        case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_TEMPLATE:
+                        case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_TEMPLATE_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_SLIDESHOW:
+                        case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_SLIDESHOW_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_MACRO:
+                        case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION:
+                            if (pptxMaxSlides > 0) {
+                                try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    XMLSlideShow pptx = new XMLSlideShow(inputStream);
+                                    int slidesNum = pptx.getSlides().length;
+                                    logger.debug("PPTX slides number is: {}", slidesNum);
+                                    result = slidesNum > pptxMaxSlides;
+                                }
                             }
-                        }
-                        break;
-                    case MimetypeMap.MIMETYPE_PPT:
-                        if (pptMaxSlides > 0) {
-                            try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                HSLFSlideShow ppt = new HSLFSlideShow(inputStream);
-                                int slidesCount = ppt.getDocumentSummaryInformation().getSlideCount();
-                                logger.debug("PPT slides count is: {}", slidesCount);
-                                result = slidesCount > pptMaxSlides;
+                            break;
+                        case MimetypeMap.MIMETYPE_PPT:
+                            if (pptMaxSlides > 0) {
+                                try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    HSLFSlideShow ppt = new HSLFSlideShow(inputStream);
+                                    int slidesCount = ppt.getDocumentSummaryInformation().getSlideCount();
+                                    logger.debug("PPT slides count is: {}", slidesCount);
+                                    result = slidesCount > pptMaxSlides;
+                                }
                             }
-                        }
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
+                } catch (Exception e) {
+                    logger.error("Get input stream of file failed, can't parse message: {}", e.getMessage());
                 }
-            } catch (Exception e) {
-                logger.error("Get input stream of file failed, can't parse message: {}", e.getMessage());
             }
         }
 
