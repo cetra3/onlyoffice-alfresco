@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 * Documents that are above preview thresholds will no longer be previewed in Share
-* Thresholds value can be set accordingly in alfresco-global.properties, the example settings are:
+* Thresholds values can be set accordingly in alfresco-global.properties, the example settings are:
 ```
   onlyoffice.preview.document.size.threshold=10485760
   onlyoffice.preview.docx.threshold=8000
@@ -17,7 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   onlyoffice.preview.pptx.threshold=1000
   onlyoffice.preview.ppt.threshold=1000
 ```
-* The default document size threshold is 10Mb, the docx and doc threshold is max paragraphs number, the xlsx and xls threshold is max total rows of sheets, the pptx and ppt thresholds is max slides number.
+* In the example settings above, document size threshold is 10Mb, the docx and doc threshold is max paragraphs number, the xlsx and xls threshold is max total rows of sheets, the pptx and ppt thresholds is max slides number.
 
 
 ## [1.2.4] 2016-11-23
