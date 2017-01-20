@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 * Documents that are above preview thresholds will no longer be previewed in Share
-* Thresholds value can be set accordingly in alfresco-global.properties, default thresholds settings will be:
+* Thresholds value can be set accordingly in alfresco-global.properties, the example settings are:
 ```
   onlyoffice.preview.document.size.threshold=10485760
   onlyoffice.preview.docx.threshold=8000

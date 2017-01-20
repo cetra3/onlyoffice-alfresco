@@ -100,18 +100,24 @@ public class Prepare extends AbstractWebScript {
         }
     }
 
-    private boolean checkAbovePreviewThreshold(NodeRef nodeRef, ContentData contentDate) {
+    private boolean checkAbovePreviewThreshold(NodeRef nodeRef, ContentData contentData) {
         boolean result = false;
-        Long documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
-        Long documentSize = contentDate.getSize();
-
-        if (documentSize > documentMaxSize) {
-            logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
+        if (globalProp.getProperty("onlyoffice.preview.document.size.threshold") == null) {
             result = true;
         }
 
         if (!result) {
-            String mimeType = contentDate.getMimetype();
+            Long documentMaxSize = Long.parseLong(globalProp.getProperty("onlyoffice.preview.document.size.threshold"));
+            Long documentSize = contentData.getSize();
+
+            if (documentSize > documentMaxSize) {
+                logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
+                result = true;
+            }
+        }
+
+        if (!result) {
+            String mimeType = contentData.getMimetype();
 
             if (mimeType != null) {
 
