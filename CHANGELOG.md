@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   onlyoffice.preview.ppt.threshold=1000
 ```
 * In the example settings above, document size threshold is 10Mb, the docx and doc threshold is max paragraphs number, the xlsx and xls threshold is max total rows of sheets, the pptx and ppt thresholds is max slides number.
+* The `onlyoffice.preview.document.size.threshold` must be defined in properties file, otherwise no preview will be shown no matter they are above other thresholds or not. Other thresholds will be 0 if not set in properties file.
 
 
 ## [1.2.4] 2016-11-23
