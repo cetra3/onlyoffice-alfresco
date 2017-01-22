@@ -105,7 +105,7 @@ public class Prepare extends AbstractWebScript {
         Long documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
         Long documentSize = contentData.getSize();
 
-        if ((documentMaxSize != 0) && (documentSize > documentMaxSize)) {
+        if (documentMaxSize != 0 && documentSize > documentMaxSize) {
             logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
             result = true;
         }
@@ -217,7 +217,6 @@ public class Prepare extends AbstractWebScript {
                 }
             }
         }
-
         return result;
     }
 }
