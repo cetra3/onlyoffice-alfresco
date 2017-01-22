@@ -102,18 +102,12 @@ public class Prepare extends AbstractWebScript {
 
     private boolean checkAbovePreviewThreshold(NodeRef nodeRef, ContentData contentData) {
         boolean result = false;
-        if (globalProp.getProperty("onlyoffice.preview.document.size.threshold") == null) {
+        Long documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
+        Long documentSize = contentData.getSize();
+
+        if ((documentMaxSize != 0) && (documentSize > documentMaxSize)) {
+            logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
             result = true;
-        }
-
-        if (!result) {
-            Long documentMaxSize = Long.parseLong(globalProp.getProperty("onlyoffice.preview.document.size.threshold"));
-            Long documentSize = contentData.getSize();
-
-            if (documentSize > documentMaxSize) {
-                logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
-                result = true;
-            }
         }
 
         if (!result) {
@@ -226,5 +220,5 @@ public class Prepare extends AbstractWebScript {
 
         return result;
     }
-
 }
+
