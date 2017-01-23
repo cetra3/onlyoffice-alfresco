@@ -34,12 +34,20 @@
 
         display: function() {
 
-            var docEditor = new DocsAPI.DocEditor(this.wp.id + "-body", this.getAttributes());
+            var aboveThreshold = this.attributes.abovePreviewThreshold;
+            if (aboveThreshold) {
+                var messageAbovePreviewThreshold = Alfresco.messages.global["label.onlyoffice.abovePreviewThreshold"];
+                if (!messageAbovePreviewThreshold) {
+                    messageAbovePreviewThreshold = "This document is too large for the preview to be displayed here. It is still available for editing or downloading.";
+                }
+                return '<div class="message">' + messageAbovePreviewThreshold + '</div>';
+            } else {
+                var docEditor = new DocsAPI.DocEditor(this.wp.id + "-body", this.getAttributes());
+                this.updateHeight();
 
-            this.updateHeight();
-
-            //Update the height of the document preview
-            window.addEventListener("optimizedResize", this.updateHeight.bind(this));
+                //Update the height of the document preview
+                window.addEventListener("optimizedResize", this.updateHeight.bind(this));
+            }
 
         },
 

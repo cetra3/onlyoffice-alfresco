@@ -26,7 +26,6 @@
                    editLink = "<a href='onlyoffice-edit?nodeRef=" + record.jsNode.nodeRef.nodeRef + "' target='_blank'>here</a>";
                    nodeTypePrefix = "onlyoffice.banner.",
                    html = "";
-                console.log(record);
 
                 if (bannerUser.userName === Alfresco.constants.USERNAME)
                 {
