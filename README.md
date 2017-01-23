@@ -20,8 +20,8 @@ Tested with Enterprise 5.0.\*, 5.1.\* and Community 5.1.\*
   onlyoffice.preview.ppt.threshold=1000
 ```
 * In the example settings above, document size threshold is 10Mb, the docx and doc threshold is max paragraphs number, the xlsx and xls threshold is max total rows of sheets, the pptx and ppt thresholds is max slides number.
-* The `onlyoffice.preview.document.size.threshold` must be defined in properties file, otherwise no preview will be shown no matter they are above other thresholds or not. Other thresholds will be 0 if not set in properties file.
-
+* Any threshold's value will be 0 if they are missing in properties file. Therefore the corresponding threshold check won't be performed. For example, if `onlyoffice.preview.document.size.threshold` is not presen
+t in alfresco-global.properties, then there won't be any limitation in terms of document size when user tries to preview a document.
 
 ### Version `1.1.0`
 
