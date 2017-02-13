@@ -21,9 +21,11 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -46,6 +48,27 @@ public class Prepare extends AbstractWebScript {
 
     @Resource(name = "global-properties")
     Properties globalProp;
+
+    Integer docxMaxParagraph;
+    Integer docMaxPage;
+    Integer xlsxMaxRows;
+    Integer xlsMaxRows;
+    Integer pptxMaxSlides;
+    Integer pptMaxSlides;
+    Long documentMaxSize;
+
+
+
+    @PostConstruct
+    public void init() {
+        docxMaxParagraph = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.docx.threshold", "0"));
+        docMaxPage = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.doc.threshold", "0"));
+        xlsxMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xlsx.threshold", "0"));
+        xlsMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xls.threshold", "0"));
+        pptxMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.pptx.threshold", "0"));
+        pptMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.ppt.threshold", "0"));
+        documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
+    }
 
     @Override
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
@@ -75,6 +98,8 @@ public class Prepare extends AbstractWebScript {
                     responseJson.put("key", key);
                     responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
                     responseJson.put("mimeType", contentData.getMimetype());
+
+
                     responseJson.put("abovePreviewThreshold", checkAbovePreviewThreshold(nodeRef, contentData));
 
                     if(globalProp.containsKey("onlyoffice.lang")) {
@@ -101,26 +126,17 @@ public class Prepare extends AbstractWebScript {
     }
 
     private boolean checkAbovePreviewThreshold(NodeRef nodeRef, ContentData contentData) {
-        boolean result = false;
-        Long documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
+
         Long documentSize = contentData.getSize();
 
         if (documentMaxSize != 0 && documentSize > documentMaxSize) {
             logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
-            result = true;
+            return true;
         }
 
-        if (!result) {
             String mimeType = contentData.getMimetype();
 
             if (mimeType != null) {
-
-                Integer docxMaxParagraph = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.docx.threshold", "0"));
-                Integer docMaxPage = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.doc.threshold", "0"));
-                Integer xlsxMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xlsx.threshold", "0"));
-                Integer xlsMaxRows = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.xls.threshold", "0"));
-                Integer pptxMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.pptx.threshold", "0"));
-                Integer pptMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.ppt.threshold", "0"));
 
                 logger.debug("Thresholds: docx: {}, doc: {}, xlsx: {}, xls: {}, pptx: {}, ppt: {}", docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
 
@@ -136,7 +152,7 @@ public class Prepare extends AbstractWebScript {
                                     XWPFDocument docx = new XWPFDocument(inputStream);
                                     int paragraphNum = docx.getBodyElements().size();
                                     logger.debug("DOCX paragraph number is: {}", paragraphNum);
-                                    result = paragraphNum > docxMaxParagraph;
+                                    return paragraphNum > docxMaxParagraph;
                                 }
                             }
                             break;
@@ -146,7 +162,7 @@ public class Prepare extends AbstractWebScript {
                                     HWPFDocument doc = new HWPFDocument(inputStream);
                                     int pageCount = doc.getSummaryInformation().getPageCount();
                                     logger.debug("DOC page count is: {}", pageCount);
-                                    result = pageCount > docMaxPage;
+                                    return  pageCount > docMaxPage;
                                 }
                             }
                             break;
@@ -162,8 +178,8 @@ public class Prepare extends AbstractWebScript {
                                         XSSFSheet sheet = xlsx.getSheetAt(i);
                                         totalRows += sheet.getPhysicalNumberOfRows();
                                         logger.debug("XLSX totalRows: {}", totalRows);
-                                        if (result = totalRows > xlsxMaxRows) {
-                                            break;
+                                        if (totalRows > xlsxMaxRows) {
+                                            return true;
                                         }
                                     }
                                 }
@@ -178,8 +194,8 @@ public class Prepare extends AbstractWebScript {
                                         HSSFSheet sheet = xls.getSheetAt(i);
                                         xlsTotalRows += sheet.getPhysicalNumberOfRows();
                                         logger.debug("XLS totalRows: {}", xlsTotalRows);
-                                        if (result = xlsTotalRows > xlsMaxRows) {
-                                            break;
+                                        if (xlsTotalRows > xlsMaxRows) {
+                                            return true;
                                         }
                                     }
                                 }
@@ -196,7 +212,7 @@ public class Prepare extends AbstractWebScript {
                                     XMLSlideShow pptx = new XMLSlideShow(inputStream);
                                     int slidesNum = pptx.getSlides().length;
                                     logger.debug("PPTX slides number is: {}", slidesNum);
-                                    result = slidesNum > pptxMaxSlides;
+                                    return slidesNum > pptxMaxSlides;
                                 }
                             }
                             break;
@@ -206,7 +222,7 @@ public class Prepare extends AbstractWebScript {
                                     HSLFSlideShow ppt = new HSLFSlideShow(inputStream);
                                     int slidesCount = ppt.getDocumentSummaryInformation().getSlideCount();
                                     logger.debug("PPT slides count is: {}", slidesCount);
-                                    result = slidesCount > pptMaxSlides;
+                                    return slidesCount > pptMaxSlides;
                                 }
                             }
                         default:
@@ -216,8 +232,8 @@ public class Prepare extends AbstractWebScript {
                     logger.error("Get input stream of file failed, can't parse message: {}", e.getMessage());
                 }
             }
-        }
-        return result;
+
+        return false;
     }
 }
 

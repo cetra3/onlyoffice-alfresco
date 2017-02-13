@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.6] 2017-02-13
+
+### Changed
+
+* No longer updating date/time when locking document (Reverts 1.2.3)
+* Refactored the thresholds code
+
 ## [1.2.5] 2016-12-14
 
 ### Changed
