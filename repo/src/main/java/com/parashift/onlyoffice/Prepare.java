@@ -15,6 +15,7 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.codehaus.plexus.util.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.*;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by cetra on 20/10/15.
@@ -60,6 +59,7 @@ public class Prepare extends AbstractWebScript {
     Integer pptMaxSlides;
     Long documentMaxSize;
 
+    Map<NodeRef, Boolean> cache;
 
 
     @PostConstruct
@@ -71,6 +71,11 @@ public class Prepare extends AbstractWebScript {
         pptxMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.pptx.threshold", "0"));
         pptMaxSlides = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.ppt.threshold", "0"));
         documentMaxSize = Long.parseLong((String) globalProp.getOrDefault("onlyoffice.preview.document.size.threshold", "0"));
+
+        Integer maxCacheSize = Integer.parseInt((String) globalProp.getOrDefault("onlyoffice.preview.threshold.cache.size", "1000"));
+
+        cache = Collections.synchronizedMap(new LruCache<NodeRef, Boolean>(maxCacheSize));
+
     }
 
     @Override
@@ -130,18 +135,24 @@ public class Prepare extends AbstractWebScript {
 
     private boolean checkAbovePreviewThreshold(NodeRef nodeRef, ContentData contentData) {
 
-        Long documentSize = contentData.getSize();
+        if(cache.containsKey(nodeRef)) {
+            logger.debug("Serving cached value for: {}", nodeRef);
+            return cache.get(nodeRef);
+        } else {
 
-        if (documentMaxSize != 0 && documentSize > documentMaxSize) {
-            logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
-            return true;
-        }
+            Long documentSize = contentData.getSize();
+
+            if (documentMaxSize != 0 && documentSize > documentMaxSize) {
+                logger.debug("Document size {} exceeds threshold {}.", documentSize, documentMaxSize);
+                cache.put(nodeRef, true);
+                return true;
+            }
 
             String mimeType = contentData.getMimetype();
 
             if (mimeType != null) {
 
-                logger.debug("Thresholds: docx: {}, doc: {}, xlsx: {}, xls: {}, pptx: {}, ppt: {}", docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
+                logger.debug("NodeRef: {}, mimeType:{}, docx: {}, doc: {}, xlsx: {}, xls: {}, pptx: {}, ppt: {}", nodeRef.getId(), mimeType, docxMaxParagraph, docMaxPage, xlsxMaxRows, xlsMaxRows, pptxMaxSlides, pptMaxSlides);
 
                 ContentReader contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
                 try {
@@ -151,22 +162,30 @@ public class Prepare extends AbstractWebScript {
                         case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING_MACRO:
                         case MimetypeMap.MIMETYPE_OPENXML_WORDPROCESSING:
                             if (docxMaxParagraph > 0) {
+
                                 try (InputStream inputStream = contentReader.getContentInputStream()) {
                                     XWPFDocument docx = new XWPFDocument(inputStream);
                                     int paragraphNum = docx.getBodyElements().size();
                                     logger.debug("DOCX paragraph number is: {}", paragraphNum);
-                                    return paragraphNum > docxMaxParagraph;
+                                    boolean result = paragraphNum > docxMaxParagraph;
+                                    cache.put(nodeRef, result);
+                                    return result;
                                 }
+
                             }
                             break;
                         case MimetypeMap.MIMETYPE_WORD:
                             if (docMaxPage > 0) {
+
                                 try (InputStream inputStream = contentReader.getContentInputStream()) {
                                     HWPFDocument doc = new HWPFDocument(inputStream);
                                     int pageCount = doc.getSummaryInformation().getPageCount();
                                     logger.debug("DOC page count is: {}", pageCount);
-                                    return  pageCount > docMaxPage;
+                                    boolean result = pageCount > docMaxPage;
+                                    cache.put(nodeRef, result);
+                                    return result;
                                 }
+
                             }
                             break;
                         case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_TEMPLATE:
@@ -174,39 +193,50 @@ public class Prepare extends AbstractWebScript {
                         case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET_MACRO:
                         case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET:
                             if (xlsxMaxRows > 0) {
+
                                 try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                    try {
+                                        Workbook xlsx = StreamingReader.builder()
+                                                .rowCacheSize(100)    // number of rows to keep in memory (defaults to 10)
+                                                .bufferSize(4096)     // buffer size to use when reading InputStream to file (defaults to 1024)
+                                                .open(inputStream);            // InputStream or File for XLSX file (required)
 
-                                    Workbook xlsx = StreamingReader.builder()
-                                            .rowCacheSize(100)    // number of rows to keep in memory (defaults to 10)
-                                            .bufferSize(4096)     // buffer size to use when reading InputStream to file (defaults to 1024)
-                                            .open(inputStream);            // InputStream or File for XLSX file (required)
-
-                                    Integer totalRows = 0;
-                                    for (int i = 0; i < xlsx.getNumberOfSheets(); i++) {
-                                        Sheet sheet = xlsx.getSheetAt(i);
-                                        totalRows += sheet.getPhysicalNumberOfRows();
-                                        logger.debug("XLSX totalRows: {}", totalRows);
-                                        if (totalRows > xlsxMaxRows) {
-                                            return true;
+                                        Integer totalRows = 0;
+                                        for (int i = 0; i < xlsx.getNumberOfSheets(); i++) {
+                                            Sheet sheet = xlsx.getSheetAt(i);
+                                            totalRows += sheet.getLastRowNum();
+                                            logger.debug("XLSX totalRows: {}", totalRows);
+                                            boolean result = totalRows > xlsxMaxRows;
+                                            if (result) {
+                                                cache.put(nodeRef, true);
+                                                return true;
+                                            }
                                         }
+
+                                    } catch (Exception e) {
+                                        logger.error("Error parsing excel spreadsheet:{}", ExceptionUtils.getFullStackTrace(e));
                                     }
 
+
                                 }
+
                             }
                             break;
                         case MimetypeMap.MIMETYPE_EXCEL:
                             if (xlsMaxRows > 0) {
-                                try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                    HSSFWorkbook xls = new HSSFWorkbook(inputStream);
-                                    Integer xlsTotalRows = 0;
-                                    for (int i = 0; i < xls.getNumberOfSheets(); i++) {
-                                        HSSFSheet sheet = xls.getSheetAt(i);
-                                        xlsTotalRows += sheet.getPhysicalNumberOfRows();
-                                        logger.debug("XLS totalRows: {}", xlsTotalRows);
-                                        if (xlsTotalRows > xlsMaxRows) {
-                                            return true;
+                                    try (InputStream inputStream = contentReader.getContentInputStream()) {
+                                        HSSFWorkbook xls = new HSSFWorkbook(inputStream);
+                                        Integer xlsTotalRows = 0;
+                                        for (int i = 0; i < xls.getNumberOfSheets(); i++) {
+                                            HSSFSheet sheet = xls.getSheetAt(i);
+                                            xlsTotalRows += sheet.getPhysicalNumberOfRows();
+                                            logger.debug("XLS totalRows: {}", xlsTotalRows);
+                                            boolean result = xlsTotalRows > xlsxMaxRows;
+                                            if (result) {
+                                                cache.put(nodeRef, true);
+                                                return true;
+                                            }
                                         }
-                                    }
                                 }
                             }
                             break;
@@ -217,11 +247,14 @@ public class Prepare extends AbstractWebScript {
                         case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION_MACRO:
                         case MimetypeMap.MIMETYPE_OPENXML_PRESENTATION:
                             if (pptxMaxSlides > 0) {
+
                                 try (InputStream inputStream = contentReader.getContentInputStream()) {
                                     XMLSlideShow pptx = new XMLSlideShow(inputStream);
                                     int slidesNum = pptx.getSlides().length;
                                     logger.debug("PPTX slides number is: {}", slidesNum);
-                                    return slidesNum > pptxMaxSlides;
+                                    boolean result = slidesNum > pptxMaxSlides;
+                                    cache.put(nodeRef, result);
+                                    return result;
                                 }
                             }
                             break;
@@ -231,7 +264,9 @@ public class Prepare extends AbstractWebScript {
                                     HSLFSlideShow ppt = new HSLFSlideShow(inputStream);
                                     int slidesCount = ppt.getDocumentSummaryInformation().getSlideCount();
                                     logger.debug("PPT slides count is: {}", slidesCount);
-                                    return slidesCount > pptMaxSlides;
+                                    boolean result = slidesCount > pptMaxSlides;
+                                    cache.put(nodeRef, result);
+                                    return result;
                                 }
                             }
                         default:
@@ -242,7 +277,40 @@ public class Prepare extends AbstractWebScript {
                 }
             }
 
-        return false;
+            cache.put(nodeRef, false);
+            return false;
+        }
     }
+
+    private class LruCache<A, B> extends LinkedHashMap<A, B> {
+        private final int maxEntries;
+
+        public LruCache(final int maxEntries) {
+            super(maxEntries + 1, 1.0f, true);
+            this.maxEntries = maxEntries;
+        }
+
+        /**
+         * Returns <tt>true</tt> if this <code>LruCache</code> has more entries than the maximum specified when it was
+         * created.
+         *
+         * <p>
+         * This method <em>does not</em> modify the underlying <code>Map</code>; it relies on the implementation of
+         * <code>LinkedHashMap</code> to do that, but that behavior is documented in the JavaDoc for
+         * <code>LinkedHashMap</code>.
+         * </p>
+         *
+         * @param eldest
+         *            the <code>Entry</code> in question; this implementation doesn't care what it is, since the
+         *            implementation is only dependent on the size of the cache
+         * @return <tt>true</tt> if the oldest
+         * @see java.util.LinkedHashMap#removeEldestEntry(Map.Entry)
+         */
+        @Override
+        protected boolean removeEldestEntry(final Map.Entry<A, B> eldest) {
+            return super.size() > maxEntries;
+        }
+    }
+
 }
 
