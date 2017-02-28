@@ -1,5 +1,6 @@
 package com.parashift.onlyoffice;
 
+import com.monitorjbl.xlsx.StreamingReader;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.repository.*;
@@ -8,6 +9,8 @@ import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -172,16 +175,22 @@ public class Prepare extends AbstractWebScript {
                         case MimetypeMap.MIMETYPE_OPENXML_SPREADSHEET:
                             if (xlsxMaxRows > 0) {
                                 try (InputStream inputStream = contentReader.getContentInputStream()) {
-                                    XSSFWorkbook xlsx = new XSSFWorkbook(inputStream);
+
+                                    Workbook xlsx = StreamingReader.builder()
+                                            .rowCacheSize(100)    // number of rows to keep in memory (defaults to 10)
+                                            .bufferSize(4096)     // buffer size to use when reading InputStream to file (defaults to 1024)
+                                            .open(inputStream);            // InputStream or File for XLSX file (required)
+
                                     Integer totalRows = 0;
                                     for (int i = 0; i < xlsx.getNumberOfSheets(); i++) {
-                                        XSSFSheet sheet = xlsx.getSheetAt(i);
+                                        Sheet sheet = xlsx.getSheetAt(i);
                                         totalRows += sheet.getPhysicalNumberOfRows();
                                         logger.debug("XLSX totalRows: {}", totalRows);
                                         if (totalRows > xlsxMaxRows) {
                                             return true;
                                         }
                                     }
+
                                 }
                             }
                             break;
