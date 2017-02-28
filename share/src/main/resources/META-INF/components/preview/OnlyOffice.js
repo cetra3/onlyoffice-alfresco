@@ -38,7 +38,7 @@
             if (aboveThreshold) {
                 var messageAbovePreviewThreshold = Alfresco.messages.global["label.onlyoffice.abovePreviewThreshold"];
                 if (!messageAbovePreviewThreshold) {
-                    messageAbovePreviewThreshold = "This document can’t be viewed or edited in OnlyOffice. Please edit using Microsoft Office.";
+                    messageAbovePreviewThreshold = "This document cannot be viewed or edited in OnlyOffice. Please edit using Microsoft Office.";
                 }
                 return '<div class="message">' + messageAbovePreviewThreshold + '</div>';
             } else {
