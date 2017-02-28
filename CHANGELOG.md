@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.8] 2017-02-28
+
+* Above Preview Threshold message is changed
+
+## [1.2.7] 2017-02-28
+
+### Changed
+
+* Optimisations to XLSX threshold reader & LRU Cache for threshold lookup
+
 ## [1.2.6] 2017-02-13
 
 ### Changed
