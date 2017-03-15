@@ -2,6 +2,7 @@ package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.policy.BehaviourFilter;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
@@ -20,6 +21,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -48,6 +50,9 @@ public class CallBack extends AbstractWebScript {
     @Autowired
     ContentService contentService;
 
+    @Autowired
+    OnlyOfficeService onlyOfficeService;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -55,58 +60,83 @@ public class CallBack extends AbstractWebScript {
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
 
         logger.debug("Received JSON Callback");
+        String user = request.getParameter("user");
+        String userToken = request.getParameter("usertoken");
+
+        logger.debug("User:{}, User Token:{}", user, userToken);
+
         JSONObject callBackJSon = new JSONObject(request.getContent().getContent());
 
         logger.debug(callBackJSon.toString(3));
 
-        String[] keyParts = callBackJSon.getString("key").split("_");
-        NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + keyParts[0]);
+        if(user != null && userToken != null && onlyOfficeService.getToken(user).contentEquals(userToken)) {
 
-        //Status codes from here: https://api.onlyoffice.com/editors/editor
+            AuthenticationUtil.runAs(() -> {
+                String[] keyParts = callBackJSon.getString("key").split("_");
+                NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + keyParts[0]);
 
-        switch(callBackJSon.getInt("status")) {
-            case 0:
-                logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
-                lockService.unlock(nodeRef);
-                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                break;
-            case 1:
-                if(!nodeService.hasAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING)) {
-                    logger.debug("Document open for editing, locking document");
+                //Status codes from here: https://api.onlyoffice.com/editors/editor
 
-                    behaviourFilter.disableBehaviour(nodeRef);
+                switch(callBackJSon.getInt("status")) {
+                    case 0:
+                        logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        break;
+                    case 1:
+                        if(!nodeService.hasAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING)) {
+                            logger.debug("Document open for editing, locking document");
 
-                    nodeService.addAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING, new HashMap<QName, Serializable>());
-                    lockService.lock(nodeRef, LockType.WRITE_LOCK);
-                } else {
-                    logger.debug("Document already locked, another user has entered/exited");
+                            behaviourFilter.disableBehaviour(nodeRef);
+
+                            nodeService.addAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING, new HashMap<QName, Serializable>());
+                            lockService.lock(nodeRef, LockType.WRITE_LOCK);
+                        } else {
+                            logger.debug("Document already locked, another user has entered/exited");
+                        }
+                        break;
+                    case 2:
+                        logger.debug("Document Updated, changing content");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        updateNode(nodeRef, callBackJSon.getString("url"));
+                        break;
+                    case 3:
+                        logger.error("ONLYOFFICE has reported that saving the document has failed");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        break;
+                    case 4:
+                        logger.debug("No document updates, unlocking node");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        break;
                 }
-                break;
-            case 2:
-                logger.debug("Document Updated, changing content");
-                lockService.unlock(nodeRef);
-                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                updateNode(nodeRef, callBackJSon.getString("url"));
-                break;
-            case 3:
-                logger.error("ONLYOFFICE has reported that saving the document has failed");
-                lockService.unlock(nodeRef);
-                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                break;
-            case 4:
-                logger.debug("No document updates, unlocking node");
-                lockService.unlock(nodeRef);
-                nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                break;
+
+                //Respond as per doco
+                try(Writer responseWriter = response.getWriter()) {
+                    JSONObject responseJson = new JSONObject();
+                    responseJson.put("error", 0);
+                    responseJson.write(responseWriter);
+                }
+
+                return null;
+            }, user);
+
+        } else {
+
+            logger.warn("Invalid User Token for User:{}", user);
+
+            try(Writer responseWriter = response.getWriter()) {
+                JSONObject responseJson = new JSONObject();
+                responseJson.put("error", 1);
+                responseJson.put("errormessage", "Invalid User Token for User:" + user);
+                responseJson.write(responseWriter);
+            }
+
         }
 
-        //Respond as per doco
-        try(Writer responseWriter = response.getWriter()) {
-            JSONObject responseJson = new JSONObject();
-            responseJson.put("error", 0);
-            responseJson.write(responseWriter);
-        }
-    }
+   }
 
     private void updateNode(NodeRef nodeRef, String url) {
         logger.debug("Retrieving URL:{}", url);

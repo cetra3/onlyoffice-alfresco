@@ -2,5 +2,5 @@
     <shortname>ONLYOFFICE CallBack URL</shortname>
     <description>Callback URL for ONLYOFFICE to inform Alfresco</description>
     <url>/parashift/onlyoffice/callback</url>
-    <authentication>user</authentication>
+    <authentication>none</authentication>
 </webscript>
