@@ -70,7 +70,7 @@ public class OnlyOfficeService {
         }
 
         if(globalProp.containsKey("onlyoffice.timeout")) {
-            timeout = (Integer) globalProp.get("onlyoffice.timeout");
+            timeout = Integer.valueOf((String) globalProp.get("onlyoffice.timeout"));
         } else {
             // timeout 0 means the window will keep open
             timeout = 0;
