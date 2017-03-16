@@ -1,7 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
+## [1.2.11] 2017-03-17
 
+### Changed
+
+* Add timeout control to OnlyOffice Editor so that editor window can be closed after desired minutes if there is no editing happened to document.
 
 ## [1.2.10] 2017-03-16
 

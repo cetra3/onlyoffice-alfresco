@@ -44,10 +44,8 @@ public class OnlyOfficeService {
     Properties globalProp;
 
     private byte[] token;
-
     private String onlyOfficeUrl;
     private String transformUrl;
-
     private Integer timeout;
 
     @PostConstruct
@@ -74,7 +72,8 @@ public class OnlyOfficeService {
         if(globalProp.containsKey("onlyoffice.timeout")) {
             timeout = (Integer) globalProp.get("onlyoffice.timeout");
         } else {
-            timeout = 120;
+            // timeout 0 means the window will keep open
+            timeout = 0;
         }
     }
 
@@ -130,15 +129,11 @@ public class OnlyOfficeService {
     }
 
     public String getOnlyOfficeTransformUrl() {
-
         return transformUrl;
-
     }
 
     public String getOnlyOfficeUrl() {
-
         return onlyOfficeUrl;
-
     }
 
     public Integer getTimeout() {

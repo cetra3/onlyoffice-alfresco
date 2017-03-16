@@ -75,7 +75,7 @@
 
         keepAlive.send();
 
-        if(idleMinutes == timeout) {
+        if(timeout > 0 && idleMinutes == timeout) {
             window.close();
         } else {
             idleMinutes ++;

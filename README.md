@@ -6,6 +6,15 @@ Tested with Enterprise 5.0.\*, 5.1.\* and Community 5.1.\*
 
 ## Release Notes
 
+### Version `1.2.11`
+
+* OnlyOffice editor tab of web browser will be closed when timeout is reached, this is achieved by adding a new property in alfresco-global.properties:
+```
+  onlyoffice.timeout=120
+```
+  The value of this property stands for the desired timeout minutes, which means if there is no editing happened to the opened document after 120 minutes, the editor window will be closed.
+* If property is not given, then no timeout minutes is set and editor will not be closed automatically
+
 ### Version `1.2.5`
 
 * Documents that are above preview thresholds will no longer be previewed in Share
