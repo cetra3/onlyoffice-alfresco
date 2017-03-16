@@ -2,7 +2,22 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.2.10] 2017-03-16
+
+### Fixed
+
+* Removed the use of Alf Tickets for callbacks.  Instead a HMAC token is generated per user, making the callback stateless and robust against server restarts and session resets.
+
+## [1.2.9] 2017-02-28
+
+### Fixed
+
+* Above Preview Threshold message formatting fixed
+
 ## [1.2.8] 2017-02-28
+
+### Changed
 
 * Above Preview Threshold message is changed
 
