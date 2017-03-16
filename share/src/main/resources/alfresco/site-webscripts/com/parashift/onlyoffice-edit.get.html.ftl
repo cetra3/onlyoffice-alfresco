@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) Ascensio System SIA 2016. All rights reserved.
+    Copyright (c) Ascensio System SIA 2017. All rights reserved.
     http://www.onlyoffice.com
 -->
 <html>
@@ -48,6 +48,7 @@
                   id: "${userId}",
                   firstname: "${firstName}",
                   lastname: "${lastName}",
+                  name: "${firstName} ${lastName}",
                 }
             },
             events: {

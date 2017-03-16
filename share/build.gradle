@@ -37,7 +37,7 @@ jar {
 
 amp {
     // id is mandatory when you want to pack a AMP
-    id = "com.parashift" + project.name
+    id = "com.parashift." + project.name
     version = project.version
     title = "ONLYOFFICE Alfresco Integration Share"
     description = project.description

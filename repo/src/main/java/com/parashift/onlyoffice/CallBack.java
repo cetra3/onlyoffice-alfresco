@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
  * Created by cetra on 20/10/15.
  */
  /*
-    Copyright (c) Ascensio System SIA 2016. All rights reserved.
+    Copyright (c) Ascensio System SIA 2017. All rights reserved.
     http://www.onlyoffice.com
 */
 @Component(value = "webscript.onlyoffice.callback.post")
