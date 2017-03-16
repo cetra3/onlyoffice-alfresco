@@ -48,6 +48,8 @@ public class OnlyOfficeService {
     private String onlyOfficeUrl;
     private String transformUrl;
 
+    private Integer timeout;
+
     @PostConstruct
     public void init() {
 
@@ -67,6 +69,12 @@ public class OnlyOfficeService {
             transformUrl = (String) globalProp.get("onlyoffice.transform.url");
         } else {
             transformUrl = onlyOfficeUrl;
+        }
+
+        if(globalProp.containsKey("onlyoffice.timeout")) {
+            timeout = (Integer) globalProp.get("onlyoffice.timeout");
+        } else {
+            timeout = 120;
         }
     }
 
@@ -131,6 +139,10 @@ public class OnlyOfficeService {
 
         return onlyOfficeUrl;
 
+    }
+
+    public Integer getTimeout() {
+        return timeout;
     }
 
 }

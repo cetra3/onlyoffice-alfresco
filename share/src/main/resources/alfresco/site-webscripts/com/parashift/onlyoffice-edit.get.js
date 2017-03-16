@@ -5,6 +5,7 @@ model.docUrl = pObj.docUrl;
 model.key = pObj.key;
 model.onlyofficeUrl = pObj.onlyofficeUrl;
 model.abovePreviewThreshold = pObj.abovePreviewThreshold;
+model.timeout = pObj.timeout;
 
 if(pObj.lang) {
   model.lang = pObj.lang;

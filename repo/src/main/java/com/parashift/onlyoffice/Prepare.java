@@ -109,6 +109,7 @@ public class Prepare extends AbstractWebScript {
 
 
                     responseJson.put("abovePreviewThreshold", checkAbovePreviewThreshold(nodeRef, contentData));
+                    responseJson.put("timeout", onlyOfficeService.getTimeout());
 
                     if(globalProp.containsKey("onlyoffice.lang")) {
                         responseJson.put("lang", globalProp.get("onlyoffice.lang"));
