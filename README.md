@@ -6,7 +6,7 @@ Tested with Enterprise 5.0.\*, 5.1.\* and Community 5.1.\*
 
 ## Release Notes
 
-### Version `1.2.11`
+### Version `1.3.0`
 
 * OnlyOffice editor tab of web browser will be closed when timeout is reached, this is achieved by adding a new property in alfresco-global.properties:
 ```
