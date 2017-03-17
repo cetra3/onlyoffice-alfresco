@@ -78,7 +78,7 @@
         if(timeout > 0 && idleMinutes == timeout) {
             window.close();
         } else {
-            idleMinutes ++;
+            idleMinutes++;
         }
 
     }, 60000);
