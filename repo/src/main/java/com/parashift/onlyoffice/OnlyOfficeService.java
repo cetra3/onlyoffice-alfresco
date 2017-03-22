@@ -87,7 +87,7 @@ public class OnlyOfficeService {
     }
 
     public String getTransformUrl(String nodeKey) {
-        return  UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/parashift/onlyoffice/transform?nodeKey=" + nodeKey + "&token=" + getToken(nodeKey);
+        return  UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/transform?nodeKey=" + nodeKey + "&token=" + getToken(nodeKey);
     }
 
     public String getCallbackUrl(NodeRef nodeRef) {

@@ -34,23 +34,31 @@ public class TransformGet extends AbstractWebScript {
     }
 
     public void submitReader(String nodeKey, ContentReader contentReader) {
+        logger.debug("Received submit for nodeKey:{}. Reader:{}", nodeKey, contentReader);
         readerMap.put(nodeKey, contentReader);
     }
 
+    public void deleteReader(String nodeKey) {
+        logger.debug("Received delete for nodeKey:{}", nodeKey);
+        readerMap.remove(nodeKey);
+    }
 
     @Override
     @SuppressWarnings("deprecation")
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
 
-        logger.debug("Received Transform Callback");
-
-        String nodeKey = "nodeKey";
+        String nodeKey = request.getParameter("nodeKey");
 
         String token = request.getParameter("token");
+
+        logger.debug("Received Transform Callback. nodeKey:{}, token:{}", nodeKey, token);
 
         if(token != null && onlyOfficeService.getToken(nodeKey).contentEquals(token)) {
 
             if(readerMap.containsKey(nodeKey)) {
+
+                logger.debug("Found Reader, sending content");
+
                 ContentReader contentReader = readerMap.get(nodeKey);
 
                 response.setContentType(contentReader.getMimetype());

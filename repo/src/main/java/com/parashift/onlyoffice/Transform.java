@@ -94,6 +94,8 @@ public class Transform extends AbstractContentTransformer2 {
 
             }
 
+            transformGet.deleteReader(key);
+
         }
     }
 
