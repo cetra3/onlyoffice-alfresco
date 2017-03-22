@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.2.11] 2017-03-23
+
+### Fixed
+
+* Transformations don't work if you are within a transaction. I.e, if you have a folder rule which does not have `Run in Background` ticked.  This now uses a special URL to access the content.
+
+
 ## [1.2.10] 2017-03-16
 
 ### Fixed
