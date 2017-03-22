@@ -14,6 +14,7 @@
           parent="baseContentTransformer" >
         <property name="mimetypeService" ref="MimetypeService" />
         <property name="onlyOfficeService" ref="onlyOfficeService" />
+        <property name="transformGet" ref="webscript.onlyoffice.transform.get" />
     </bean>
 
     <bean id="onlyofficeModelBootstrap" class="org.alfresco.repo.dictionary.DictionaryBootstrap" init-method="bootstrap"

@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>ONLYOFFICE Transform URL</shortname>
+    <description>Allows onlyoffice access to the transform reader</description>
+    <url>/parashift/onlyoffice/transform</url>
+    <authentication>none</authentication>
+    <format default="json">argument</format>
+</webscript>
