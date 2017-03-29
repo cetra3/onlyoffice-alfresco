@@ -78,80 +78,81 @@ public class CallBack extends AbstractWebScript {
 
         if(user != null && userToken != null && onlyOfficeService.getToken(user).contentEquals(userToken)) {
 
-            AuthenticationUtil.runAs(() -> {
+            AuthenticationUtil.setFullyAuthenticatedUser(user);
+            AuthenticationUtil.setRunAsUser(user);
 
+            UserTransaction trx = transactionService.getNonPropagatingUserTransaction(false);
 
-                UserTransaction trx = transactionService.getNonPropagatingUserTransaction(false);
+            try {
+                trx.begin();
+
+                String[] keyParts = callBackJSon.getString("key").split("_");
+                NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + keyParts[0]);
+
+                //Status codes from here: https://api.onlyoffice.com/editors/editor
+
+                switch(callBackJSon.getInt("status")) {
+                    case 0:
+                        logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        break;
+                    case 1:
+                        if(!nodeService.hasAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING)) {
+                            logger.debug("Document open for editing, locking document");
+
+                            behaviourFilter.disableBehaviour(nodeRef);
+
+                            nodeService.addAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING, new HashMap<QName, Serializable>());
+                            lockService.lock(nodeRef, LockType.WRITE_LOCK);
+                        } else {
+                            logger.debug("Document already locked, another user has entered/exited");
+                        }
+                        break;
+                    case 2:
+                        logger.debug("Document Updated, changing content");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        updateNode(nodeRef, callBackJSon.getString("url"));
+                        break;
+                    case 3:
+                        logger.error("ONLYOFFICE has reported that saving the document has failed");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        break;
+                    case 4:
+                        logger.debug("No document updates, unlocking node");
+                        lockService.unlock(nodeRef);
+                        nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
+                        break;
+                }
+
+                //Respond as per doco
+                try(Writer responseWriter = response.getWriter()) {
+                    JSONObject responseJson = new JSONObject();
+                    responseJson.put("error", 0);
+                    responseJson.write(responseWriter);
+                }
+
+                trx.commit();
+
+                AuthenticationUtil.clearCurrentSecurityContext();
+
+            } catch (Exception e) {
+
+                logger.error("Exception in transaction: {}", ExceptionUtils.getStackTrace(e));
 
                 try {
-                    trx.begin();
-
-                    String[] keyParts = callBackJSon.getString("key").split("_");
-                    NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + keyParts[0]);
-
-                    //Status codes from here: https://api.onlyoffice.com/editors/editor
-
-                    switch(callBackJSon.getInt("status")) {
-                        case 0:
-                            logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
-                            lockService.unlock(nodeRef);
-                            nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                            break;
-                        case 1:
-                            if(!nodeService.hasAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING)) {
-                                logger.debug("Document open for editing, locking document");
-
-                                behaviourFilter.disableBehaviour(nodeRef);
-
-                                nodeService.addAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING, new HashMap<QName, Serializable>());
-                                lockService.lock(nodeRef, LockType.WRITE_LOCK);
-                            } else {
-                                logger.debug("Document already locked, another user has entered/exited");
-                            }
-                            break;
-                        case 2:
-                            logger.debug("Document Updated, changing content");
-                            lockService.unlock(nodeRef);
-                            nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                            updateNode(nodeRef, callBackJSon.getString("url"));
-                            break;
-                        case 3:
-                            logger.error("ONLYOFFICE has reported that saving the document has failed");
-                            lockService.unlock(nodeRef);
-                            nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                            break;
-                        case 4:
-                            logger.debug("No document updates, unlocking node");
-                            lockService.unlock(nodeRef);
-                            nodeService.removeAspect(nodeRef, OnlyOfficeModel.ASPECT_OO_CURRENTLY_EDITING);
-                            break;
+                    if(trx.getStatus() == Status.STATUS_ACTIVE || trx.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
+                        trx.rollback();
                     }
 
-                    //Respond as per doco
-                    try(Writer responseWriter = response.getWriter()) {
-                        JSONObject responseJson = new JSONObject();
-                        responseJson.put("error", 0);
-                        responseJson.write(responseWriter);
-                    }
+                    throw new IOException("Exception in transaction: " + ExceptionUtils.getStackTrace(e));
 
-                    trx.commit();
-                } catch (Exception e) {
-
-                    logger.error("Exception in transaction: {}", ExceptionUtils.getStackTrace(e));
-
-                    try {
-                        if(trx.getStatus() == Status.STATUS_ACTIVE || trx.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
-                            trx.rollback();
-                        }
-
-                        throw new IOException("Exception in transaction: " + ExceptionUtils.getStackTrace(e));
-
-                    } catch (SystemException e1) {
-                        logger.error("Exception rolling back transaction: {}", ExceptionUtils.getStackTrace(e1));
-                    }
+                } catch (SystemException e1) {
+                    logger.error("Exception rolling back transaction: {}", ExceptionUtils.getStackTrace(e1));
                 }
-                return null;
-            }, user);
+            }
 
         } else {
 
@@ -166,7 +167,7 @@ public class CallBack extends AbstractWebScript {
 
         }
 
-   }
+    }
 
     private void updateNode(NodeRef nodeRef, String url) {
         logger.debug("Retrieving URL:{}", url);

@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+
+
+## [1.2.12] 2017-03-29
+
+### Fixed
+
+* Security Contexts are sometimes not cleared on the current thread by other webscripts.  This causes the lock and modification properties to reflect a completely different user.  Adjusting both the FullyAuthenticated and RunAsUser manually instead of a runAs callback resolves this.
+
 ## [1.2.11] 2017-03-23
 
 ### Fixed
