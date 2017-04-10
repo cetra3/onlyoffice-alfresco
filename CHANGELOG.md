@@ -7,6 +7,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 * Add timeout control to OnlyOffice Editor so that editor window can be closed after desired minutes if there is no editing happened to document.
 
+
+
+## [1.2.12] 2017-03-29
+
+### Fixed
+
+* Security Contexts are sometimes not cleared on the current thread by other webscripts.  This causes the lock and modification properties to reflect a completely different user.  Adjusting both the FullyAuthenticated and RunAsUser manually instead of a runAs callback resolves this.
+
+## [1.2.11] 2017-03-23
+
+### Fixed
+
+* Transformations don't work if you are within a transaction. I.e, if you have a folder rule which does not have `Run in Background` ticked.  This now uses a special URL to access the content.
+
+
 ## [1.2.10] 2017-03-16
 
 ### Fixed

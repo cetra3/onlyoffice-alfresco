@@ -32,6 +32,8 @@ public class Transform extends AbstractContentTransformer2 {
 
     private OnlyOfficeService onlyOfficeService;
 
+    private TransformGet transformGet;
+
     private Unmarshaller unmarshaller = null;
 
     private static final Set<String> SOURCE_MIMETYPES = new HashSet<String>() {{
@@ -67,6 +69,10 @@ public class Transform extends AbstractContentTransformer2 {
 
             logger.debug("Sending request to: {}", request.getURI().toString());
 
+            String key = onlyOfficeService.getKey(options.getSourceNodeRef());
+
+            transformGet.submitReader(key, reader);
+
             try(CloseableHttpResponse response = httpClient.execute(request)) {
 
                 int status = response.getStatusLine().getStatusCode();
@@ -87,6 +93,8 @@ public class Transform extends AbstractContentTransformer2 {
                 }
 
             }
+
+            transformGet.deleteReader(key);
 
         }
     }
@@ -120,8 +128,10 @@ public class Transform extends AbstractContentTransformer2 {
 
         URIBuilder builder = new URIBuilder(onlyOfficeService.getOnlyOfficeTransformUrl() + "/ConvertService.ashx");
 
-        builder.setParameter("key", onlyOfficeService.getKey(options.getSourceNodeRef()));
-        builder.setParameter("url", onlyOfficeService.getContentUrl(options.getSourceNodeRef()));
+        String key = onlyOfficeService.getKey(options.getSourceNodeRef());
+
+        builder.setParameter("key", key);
+        builder.setParameter("url", onlyOfficeService.getTransformUrl(key));
         builder.setParameter("filetype", getMimetypeService().getExtension(reader.getMimetype()));
         builder.setParameter("outputtype", getMimetypeService().getExtension(writer.getMimetype()));
         builder.setParameter("embeddedfonts", "true");
@@ -136,4 +146,7 @@ public class Transform extends AbstractContentTransformer2 {
     }
 
 
+    public void setTransformGet(TransformGet transformGet) {
+        this.transformGet = transformGet;
+    }
 }

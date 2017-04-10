@@ -1,55 +1,62 @@
 # Alfresco ONLYOFFICE integration
 
-This Share plugin enables users to edit Office documents within ONLYOFFICE from Alfresco Share. This will create a new **Edit in ONLYOFFICE** action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to Alfresco.
+This Share plugin enables users to edit and preview Office documents within ONLYOFFICE from Alfresco Share. This will create a new **Edit in ONLYOFFICE** action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to Alfresco.
 
-Tested with Enterprise 5.0.\*, 5.1.\* and Community 5.1.\*
+Tested with Enterprise 5.0.\*, 5.1.\*, 5.2.\* and Community 5.1.\*
 
-## Release Notes
+## Features
 
-### Version `1.3.0`
+* Creates a new **Edit in OnlyOffice** Action within the document library for office documents.
+* Allows multiple users to collaborate in real time and save back changes to Alfresco.
+* Web Preview for Excel, Powerpoint and Word documents replacing the default PDF view.
+* Transformation of Excel, Powerpoint and Word documents to PDF using OnlyOffice.
 
-* OnlyOffice editor tab of web browser will be closed when timeout is reached, this is achieved by adding a new property in alfresco-global.properties:
-```
-  onlyoffice.timeout=120
-```
-  The value of this property stands for the desired timeout minutes, which means if there is no editing happened to the opened document after 120 minutes, the editor window will be closed.
-* If property is not given, then no timeout minutes is set and editor will not be closed automatically
+## Usage
 
-### Version `1.2.5`
+### Realtime Collaboration
 
-* Documents that are above preview thresholds will no longer be previewed in Share
-* Thresholds values can be set accordingly in alfresco-global.properties, the example settings are:
-```
-  onlyoffice.preview.document.size.threshold=10485760
-  onlyoffice.preview.docx.threshold=8000
-  onlyoffice.preview.doc.threshold=8000
-  onlyoffice.preview.xlsx.threshold=10000
-  onlyoffice.preview.xls.threshold=10000
-  onlyoffice.preview.pptx.threshold=1000
-  onlyoffice.preview.ppt.threshold=1000
-```
-* In the example settings above, document size threshold is 10Mb, the docx and doc threshold is max paragraphs number, the xlsx and xls threshold is max total rows of sheets, the pptx and ppt thresholds is max slides number.
-* Any threshold's value will be 0 if they are missing in properties file. Therefore the corresponding threshold check won't be performed. For example, if `onlyoffice.preview.document.size.threshold` is not presen
-t in alfresco-global.properties, then there won't be any limitation in terms of document size when user tries to preview a document.
+* Navigate to an Office Document such as a word document within Alfresco Share.
+* Select the `Edit in Onlyoffice` action:
 
-### Version `1.1.0`
+![editinonlyoffice](edit_in_onlyoffice.png)
+
+* This will lock the document in Alfresco until you are finished, but leaving the `Edit in OnlyOffice` action available for other users:
+
+![example_lock](example_lock.png)
+
+* If a Document is being edited by someone else, you can join them by clicking on the banner above the document, or by clicking the `Edit in OnlyOffice` action:
+
+![lock_banner](lock_banner.png)
 
 
-* Support for OnlyOffice version 4 (Tested with Alfresco Enterprise 5.1)
-* Adds a few more Languages as per the ONLYOFFICE fork
-* Limits the Edit in OnlyOffice button to certain mime types within Alfresco, rather than globally available as an action
-* Adds a keep alive to make sure the share session does not expire when you have a window open
-* Adds a new global property: `onlyoffice.lang`.  This will set the language of the editor.  E.g, for italian:
-  ```
-  onlyoffice.lang=it
-  ```
-* Wrapped some response writers in the try blocks
+### Web Preview
+
+Web preview of documents replaces the default pdfjs viewer in Alfresco.  This is a much more usable experience for documents such as excel spreadsheets and powerpoint presentations.
+
+This is an automatic feature, and will display the preview for the following document types by extension:
+
+* Word: docx, docm, dotx, dotm, doc
+* Excel: xlsx, xlsm, xlt, xls
+* Powerpoint: pptx, pptm, potx, potm, ppt
+
+
+### Transformation
+
+Transformation is also automatic, and will replace the default transformer for the following file type combinations:
+
+* docx to pdf
+* doc to pdf
+* pptx to pdf
+* ppt to pdf
+* xlsx to pdf
+* xls to pdf
+
 
 ## Compiling
 
 You will need:
 
-* Java 7 SDK or above
+* Java 8 SDK or above
 
 * Gradle
 
@@ -85,6 +92,11 @@ The easiest way to start an instance of ONLYOFFICE is to use Docker: https://git
   alfresco.context=alfresco
   ```
 
+* The integration uses a HMAC-SHA256 token based system to communicate to Alfresco from OnlyOffice.  This connection used to use the user's alf_ticket value, but was found to be unreliable, and would reset if the sessions are flushed.  The secret token is generated based upon the hostname of the server, but can be explicitly set in the global properties:
+  ```
+  onlyoffice.token=<Secret Token here>
+  ```
+
 * (Optional) set the default language that the editor will use.  By default the document editor should pick up the language of the browser, so it doesn't always need to be set.
 
   ```
@@ -96,6 +108,18 @@ The easiest way to start an instance of ONLYOFFICE is to use Docker: https://git
   ```
   onlyoffice.transform.url=http://documentserver/
   ```
+* (Optional) if the office documents in your environment are very large, some browsers can struggle to render them with the web preview.  Document sizes and content values can be thresholded, so the preview will not appear above the threshold.  This feature is not turned on by default. You can adjust the thresholds of various documents by editing the following values:
+  ```
+  onlyoffice.preview.document.size.threshold=10485760
+  onlyoffice.preview.docx.threshold=8000
+  onlyoffice.preview.doc.threshold=8000
+  onlyoffice.preview.xlsx.threshold=10000
+  onlyoffice.preview.xls.threshold=10000
+  onlyoffice.preview.pptx.threshold=1000
+  onlyoffice.preview.ppt.threshold=1000
+  ```
+
+#### Transformations
 
 ## How it works
 
@@ -105,7 +129,7 @@ The ONLYOFFICE integration follows the API documented here https://api.onlyoffic
 * Alfresco Share makes a request to the repo end (URL of the form: `/parashift/onlyoffice/prepare?nodeRef={nodeRef}`).
 * Alfresco Repo end prepares a JSON object for Share with the following properties:
   * **docUrl**: the URL that ONLYOFFICE uses to download the document (includes the `alf_ticket` of the current user),
-  * **callbackUrl**: the URL that ONLYOFFICE informs about status of the document editing,
+  * **callbackUrl**: the URL that ONLYOFFICE informs about status of the document editing.  This uses the username + secret token HMAC-SHA256 checksum, rather than normal authentication.
   * **onlyofficeUrl**: the URL that the client needs to talk to ONLYOFFICE (given by the onlyoffice.url property),
   * **key**: the UUID+Modified Timestamp to instruct ONLYOFFICE whether to download the document again or not,
   * **docTitle**: the Title (name) of the document.

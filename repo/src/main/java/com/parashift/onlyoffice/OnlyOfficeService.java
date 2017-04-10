@@ -93,6 +93,10 @@ public class OnlyOfficeService {
         return  UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/node/content/workspace/SpacesStore/" + nodeRef.getId() + "?alf_ticket=" + authenticationService.getCurrentTicket();
     }
 
+    public String getTransformUrl(String nodeKey) {
+        return  UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/transform?nodeKey=" + nodeKey + "&token=" + getToken(nodeKey);
+    }
+
     public String getCallbackUrl(NodeRef nodeRef) {
 
         String username = authenticationService.getCurrentUserName();
@@ -100,14 +104,14 @@ public class OnlyOfficeService {
         return UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/callback?nodeRef=" + nodeRef.toString() + "&user=" + username + "&usertoken=" + getToken(username);
     }
 
-    public String getToken(String username) {
+    public String getToken(String value) {
 
         try {
             SecretKeySpec signingKey = new SecretKeySpec(token, "HmacSHA256");
 
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(signingKey);
-            mac.update(username.getBytes());
+            mac.update(value.getBytes());
             byte[] bytes = mac.doFinal();
 
             return bytesToHex(bytes);
