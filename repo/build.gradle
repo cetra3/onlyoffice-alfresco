@@ -9,7 +9,6 @@ buildscript {
     }
 }
 
-
 apply plugin: 'alfresco-amp'
 
 allprojects {
@@ -28,9 +27,6 @@ ext {
 
 }
 
-
-
-
 project.description = "ONLYOFFICE Integration for Alfresco"
 version = "git describe --tags".execute().text.trim()
 
@@ -45,7 +41,6 @@ repositories {
 configurations {
     all*.exclude group: 'maven-plugins'
 }
-
 
 dependencies {
     compile (group: "org.alfresco", name: "alfresco", version: "${alfresco.version}", classifier: "classes") {
@@ -76,4 +71,3 @@ amp {
     description = project.description
     addLibDir("ampLib")
 }
-

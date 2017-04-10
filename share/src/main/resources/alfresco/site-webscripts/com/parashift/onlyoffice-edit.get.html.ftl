@@ -21,6 +21,11 @@
         <div id="placeholder"></div>
     </div>
     <script>
+    if(typeof String.prototype.trim !== 'function') {
+      String.prototype.trim = function() {
+        return this.replace(/^\s+|\s+$/g, '');
+      }
+    }
 
     if (typeof String.prototype.trim !== 'function') {
         String.prototype.trim = function() {
@@ -30,6 +35,14 @@
 
     var docName = "${docTitle}";
     var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
+    var timeout = ${timeout};
+    var idleMinutes = 0;
+
+    var onDocumentStateChange = function (event) {
+        if (event.data) {
+            idleMinutes = 0;
+        }
+    };
 
     var docConfig = {
         type: "desktop",
@@ -53,6 +66,9 @@
               firstname: "${firstName}",
               lastname: "${lastName}"
             }
+        },
+        events: {
+          "onDocumentStateChange": onDocumentStateChange
         }
     };
 
@@ -71,6 +87,13 @@
         keepAlive.open("GET", "${url.context}/proxy/alfresco/api/admin/restrictions", true);
 
         keepAlive.send();
+
+        if(timeout > 0 && idleMinutes == timeout) {
+            window.open('','_self','');
+            window.close();
+        } else {
+            idleMinutes++;
+        }
 
     }, 60000);
     </script>
