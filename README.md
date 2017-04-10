@@ -51,7 +51,6 @@ Transformation is also automatic, and will replace the default transformer for t
 * xlsx to pdf
 * xls to pdf
 
-
 ## Compiling
 
 You will need:
@@ -119,8 +118,6 @@ The easiest way to start an instance of ONLYOFFICE is to use Docker: https://git
   onlyoffice.preview.ppt.threshold=1000
   ```
 
-#### Transformations
-
 ## How it works
 
 The ONLYOFFICE integration follows the API documented here https://api.onlyoffice.com/editors/basic:
@@ -141,3 +138,20 @@ The ONLYOFFICE integration follows the API documented here https://api.onlyoffic
 * When all users and client browsers are finished, they close the editing window.
 * After 10 seconds of inactivity, ONLYOFFICE sends a POST to the callback URL letting Alfresco know that the clients have finished.
 * Alfresco downloads the new version of the document, replacing the old one.
+
+## Troubleshooting
+
+If opening a document via `Edit in OnlyOffice` encounters the issue like below in Internet Explorer browser:
+
+![browsernotsupported](browser_is_not_supported.png)
+
+Please change the `Compatibility View Settings` in IE by choosing the compatibility view settings menu items as shown below:
+
+![compatibility_view_settings](compatibility_view_settings.png)
+
+Uncheck the `Display intranet sites in Compatibility View` option, click close.
+
+![uncheck_display_in_compatibility_view](uncheck_display_in_compatibility_view.png)
+
+Now you should be able to edit document in OnlyOffice document editor.
+
