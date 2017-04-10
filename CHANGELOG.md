@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.1] 2017-04-10
+
+### Changed
+
+* Remove the Javascript `trim` function definition as it's added only for IE 11 compatibility view feature, but user needs to disable this to make sure OnlyOffice works as expect, so this definition is not required any more.
+
 ## [1.3.0] 2017-04-10
 
 ### Changed
