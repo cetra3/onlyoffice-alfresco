@@ -21,14 +21,21 @@
         <div id="placeholder"></div>
     </div>
     <script>
+    if(typeof String.prototype.trim !== 'function') {
+      String.prototype.trim = function() {
+        return this.replace(/^\s+|\s+$/g, '');
+      }
+    }
 
     var docName = "${docTitle}";
     var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
     var timeout = ${timeout};
     var idleMinutes = 0;
 
-    var onDocumentStateChange = function () {
-        idleMinutes = 0;
+    var onDocumentStateChange = function (event) {
+        if (event.data) {
+            idleMinutes = 0;
+        }
     };
 
     var docConfig = {
@@ -51,7 +58,7 @@
             user: {
               id: "${userId}",
               firstname: "${firstName}",
-              lastname: "${lastName}",
+              lastname: "${lastName}"
             }
         },
         events: {
@@ -76,6 +83,7 @@
         keepAlive.send();
 
         if(timeout > 0 && idleMinutes == timeout) {
+            window.open('','_self','');
             window.close();
         } else {
             idleMinutes++;
