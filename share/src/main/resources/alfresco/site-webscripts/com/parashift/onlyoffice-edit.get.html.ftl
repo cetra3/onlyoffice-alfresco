@@ -21,17 +21,6 @@
         <div id="placeholder"></div>
     </div>
     <script>
-    if(typeof String.prototype.trim !== 'function') {
-      String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, '');
-      }
-    }
-
-    if (typeof String.prototype.trim !== 'function') {
-        String.prototype.trim = function() {
-            return this.replace(/^\s+|\s+$/g, '');
-        }
-    }
 
     var docName = "${docTitle}";
     var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();

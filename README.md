@@ -141,11 +141,11 @@ The ONLYOFFICE integration follows the API documented here https://api.onlyoffic
 
 ## Troubleshooting
 
-If opening a document via `Edit in OnlyOffice` encounters the issue like below in Internet Explorer browser:
+When user wants to edit a document via `Edit in OnlyOffice`, the opened document editor window may not be loaded due to Internet Explorer compatibility feature is enabled, which cause some methods that only exist in higher version of IE are not available. If an error message `Object doesn't support property or method 'trim'` can be found in developer console of IE (press F12 then go to `Console` tab) or error message as shown below is seen, you need to disable the compatibility view settings in IE:
 
 ![browsernotsupported](browser_is_not_supported.png)
 
-Please change the `Compatibility View Settings` in IE by choosing the compatibility view settings menu items as shown below:
+You can change the `Compatibility View Settings` in IE by choosing the compatibility view settings menu items as shown below, the menu will show up by clicking gear on right top corner of browser:
 
 ![compatibility_view_settings](compatibility_view_settings.png)
 
@@ -153,5 +153,5 @@ Uncheck the `Display intranet sites in Compatibility View` option, click close.
 
 ![uncheck_display_in_compatibility_view](uncheck_display_in_compatibility_view.png)
 
-Now you should be able to edit document in OnlyOffice document editor.
+Refresh the page if editor is not auto-loaded, then you should be able to edit document in OnlyOffice document editor.
 
