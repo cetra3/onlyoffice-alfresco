@@ -75,7 +75,7 @@
             var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
 
             var config = {
-                type: "desktop",
+                type: "embedded",
                 width: "100%",
                 height: "100%",
                 documentType: getDocumentType(docType),
