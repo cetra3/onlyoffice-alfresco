@@ -30,3 +30,8 @@ var translateDocumentType = function(docType) {
     if (".pot".indexOf(docType) != -1) return "ppt";
     return docType;
 };
+
+var getEditorType = function() {
+    var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+    return isIE11 ? "embedded" : "desktop";
+};
