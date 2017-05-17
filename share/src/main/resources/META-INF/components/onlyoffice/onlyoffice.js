@@ -32,6 +32,6 @@ var translateDocumentType = function(docType) {
 };
 
 var getEditorType = function() {
-    var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
-    return isIE11 ? "embedded" : "desktop";
+    var isIEorEdge = document.documentMode || (navigator.appName == "Netscape" && navigator.appVersion.indexOf('Edge') > -1);
+    return isIEorEdge ? "embedded" : "desktop";
 };
