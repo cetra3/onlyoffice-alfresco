@@ -30,3 +30,8 @@ var translateDocumentType = function(docType) {
     if (".pot".indexOf(docType) != -1) return "ppt";
     return docType;
 };
+
+var getEditorType = function() {
+    var isIEorEdge = document.documentMode || (navigator.appName == "Netscape" && navigator.appVersion.indexOf('Edge') > -1);
+    return isIEorEdge ? "embedded" : "desktop";
+};

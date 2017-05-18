@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.2] 2017-05-01
+
+### Fixed
+
+* Issues identified when previweing excel documents in IE11 and Edge browsers are fixed, including:
+  * User can't type in some letters in comment text area.
+  * The placeholder text of search text field on right top of Share won't disappear when the search text field gets focused.
+
+### Changed
+
+Now in IE11 and Edge browsers, the editor of embedded type of OnlyOffice will be used to preview documents rather than editor of desktop type.
+
+
 ## [1.3.1] 2017-04-10
 
 ### Changed
