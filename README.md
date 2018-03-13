@@ -15,7 +15,7 @@ Tested with Alfresco 5.\*
 
 You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from Alfresco and any end clients (version 3.0 and later are supported for use with the plugin). If that is not the case, use the official ONLYOFFICE Document Server documentation page: [Document Server for Linux](http://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE Document Server must also be able to POST to Alfresco directly.
 
-The easiest way to start an instance of ONLYOFFICE Document Server is to use [Docker](https://github.com/ONLYOFFICE/Docker-DocumentServer).
+The easiest way to start an instance of ONLYOFFICE Document Server is to use [Docker](https://github.com/onlyoffice/Docker-DocumentServer).
 
 
 ## Installing ONLYOFFICE Alfresco module package
@@ -38,8 +38,7 @@ sudo apt-get install gradle
 
 3. The latest stable Oracle Java version is necessary for the successful build. If you do not have it installed, use the following commands to install Oracle Java 8: 
 ```bash
-sudo add-apt-repository 
-ppa:webupd8team/java
+sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
 sudo apt-get install oracle-java8-installer
 ```
@@ -54,7 +53,7 @@ gradle publish
 5. Download the ONLYOFFICE Alfresco module package source code: 
 ```bash
 cd ..
-git clone https://github.com/ONLYOFFICE/onlyoffice-alfresco.git
+git clone https://github.com/onlyoffice/onlyoffice-alfresco.git
 ```
 
 6. Compile packages in the `repo` and `share` directories: 
@@ -71,7 +70,7 @@ gradle amp
 > You can download the already compiled package files [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases) and place them to the respective directories.
 
 
-8. Installing an [Alfresco Module Package](http://docs.alfresco.com/5.2/tasks/amp-install.html) to Alfresco
+8. Installing an [Alfresco Module Package](http://docs.alfresco.com/5.2/tasks/amp-install.html) to Alfresco:
 ```bash
 sudo bin/apply_amps.sh
 ```
