@@ -13,4 +13,4 @@ model.onlyofficeUrl = pObj.onlyofficeUrl;
 model.userId = user.id;
 model.firstName = user.firstName;
 model.lastName = user.lastName;
-
+model.lang = pObj.lang;
