@@ -59,6 +59,7 @@ public class CallBack extends AbstractWebScript {
 
         //Status codes from here: https://api.onlyoffice.com/editors/editor
 
+        int saved = 0;
         switch(callBackJSon.getInt("status")) {
             case 0:
                 logger.error("ONLYOFFICE has reported that no doc with the specified key can be found");
@@ -76,7 +77,10 @@ public class CallBack extends AbstractWebScript {
             case 2:
                 logger.debug("Document Updated, changing content");
                 lockService.unlock(nodeRef);
-                updateNode(nodeRef, callBackJSon.getString("url"));
+                if (!updateNode(nodeRef, callBackJSon.getString("url")))
+                {
+                    saved = 1;
+                }
                 break;
             case 3:
                 logger.error("ONLYOFFICE has reported that saving the document has failed");
@@ -88,10 +92,10 @@ public class CallBack extends AbstractWebScript {
                 break;
         }
 
-        response.getWriter().write("{\"error\":0}");
+        response.getWriter().write("{\"error\":" + saved + "}");
     }
 
-    private void updateNode(NodeRef nodeRef, String url) {
+    private boolean updateNode(NodeRef nodeRef, String url) {
         logger.debug("Retrieving URL:{}", url);
 
         try {
@@ -99,7 +103,9 @@ public class CallBack extends AbstractWebScript {
             contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
         } catch (IOException e) {
             logger.error(ExceptionUtils.getFullStackTrace(e));
+            return false;
         }
+        return true;
     }
 }
 
