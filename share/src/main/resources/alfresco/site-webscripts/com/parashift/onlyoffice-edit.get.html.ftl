@@ -26,8 +26,7 @@
     var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
     var documentType = getDocumentType(docType);
 
-    new DocsAPI.DocEditor("placeholder",
-        {
+    new DocsAPI.DocEditor("placeholder", {
             type: "desktop",
             width: "100%",
             height: "100%",
@@ -42,6 +41,7 @@
                 },
             },
             editorConfig: {
+                lang: "${lang}",
                 mode: "edit",
                 callbackUrl: "${callbackUrl}",
                 user: {
