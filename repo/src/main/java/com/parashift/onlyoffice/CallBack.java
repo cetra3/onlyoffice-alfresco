@@ -24,6 +24,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.Properties;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by cetra on 20/10/15.
@@ -43,6 +53,9 @@ public class CallBack extends AbstractWebScript {
 
     @Autowired
     ContentService contentService;
+
+    @Resource(name = "global-properties")
+    Properties globalProp;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -99,6 +112,7 @@ public class CallBack extends AbstractWebScript {
         logger.debug("Retrieving URL:{}", url);
 
         try {
+            checkCert();
             InputStream in = new URL( url ).openStream();
             contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
         } catch (IOException e) {
@@ -106,6 +120,56 @@ public class CallBack extends AbstractWebScript {
             return false;
         }
         return true;
+    }
+
+    private void checkCert() {
+        String cert = (String) globalProp.getOrDefault("onlyoffice.cert", "no");
+        if (cert.equals("true")) {
+            TrustManager[] trustAllCerts = new TrustManager[]
+            {
+                new X509TrustManager()
+                {
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers()
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] certs, String authType)
+                    {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] certs, String authType)
+                    {
+                    }
+                }
+            };
+
+            SSLContext sc;
+
+            try
+            {
+                sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            }
+            catch (NoSuchAlgorithmException | KeyManagementException ex)
+            {
+            }
+
+            HostnameVerifier allHostsValid = new HostnameVerifier()
+            {
+                @Override
+                public boolean verify(String hostname, SSLSession session)
+                {
+                return true;
+                }
+            };
+
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        }
     }
 }
 
