@@ -24,6 +24,7 @@ To start using ONLYOFFICE Document Server with Alfresco, the following steps mus
 
 > Steps **1** &mdash; **6** are only necessary if you for some reason plan to compile the ONLYOFFICE Alfresco module package yourself (e.g. edit the source code and compile it afterwards). If you do not want to do that and plan to use the already compiled module files, please skip to step **7** directly. The latest compiled package files are available [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases).
 
+
 1. Remove gradle in case it has already been installed (it is needed to install the latest available version later at the next step):
 ```bash
 sudo apt-get remove gradle
@@ -68,7 +69,6 @@ gradle amp
 * from `onlyoffice-alfresco/repo/build/amp` to the `amps/` for Alfresco repository,
 * from `onlyoffice-alfresco/share/build/amp` to `amps_share/` for Share.
 > You can download the already compiled package files [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases) and place them to the respective directories.
-
 
 8. Installing an [Alfresco Module Package](http://docs.alfresco.com/5.2/tasks/amp-install.html) to Alfresco:
 ```bash
