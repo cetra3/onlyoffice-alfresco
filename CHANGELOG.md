@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0]
+
+### Fixed
+
+* Use new AMP Plugin for Gradle
+
+### Added
+
+* Activity Feed Listener (Thanks [douglascrp](https://github.com/douglascrp)!)
+
 ## [1.3.2] 2017-05-01
 
 ### Fixed
