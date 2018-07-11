@@ -1,19 +1,25 @@
 package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.activities.ActivityType;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.activities.ActivityService;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.site.SiteInfo;
+import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +39,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.Writer;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
@@ -59,6 +66,12 @@ public class CallBack extends AbstractWebScript {
 
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    SiteService siteService;
+
+    @Autowired
+    ActivityService activityService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -175,9 +188,38 @@ public class CallBack extends AbstractWebScript {
         try {
             InputStream in = new URL( url ).openStream();
             contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
+            postActivityUpdated(nodeRef);
         } catch (IOException e) {
             logger.error(ExceptionUtils.getFullStackTrace(e));
         }
     }
+
+    private void postActivityUpdated(NodeRef nodeRef) {
+
+        try {
+
+            SiteInfo siteInfo = siteService.getSite(nodeRef);
+            String jsonActivityData;
+
+            JSONWriter jsonWriter = new JSONStringer().object();
+
+            jsonWriter.key("title").value(nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
+            jsonWriter.key("nodeRef").value(nodeRef.toString());
+            jsonWriter.key("page").value("document-details?nodeRef=" + URLEncoder.encode(nodeRef.toString(), "UTF-8"));
+
+            jsonActivityData = jsonWriter.endObject().toString();
+
+            activityService.postActivity(
+                    ActivityType.FILE_UPDATED,
+                    (siteInfo == null ? null : siteInfo.getShortName()),
+                    (siteInfo == null ? null : SiteService.DOCUMENT_LIBRARY),
+                    jsonActivityData);
+
+        } catch (Exception e) {
+            logger.error("Error writing JSON for Activity Update:{}", ExceptionUtils.getStackTrace(e));
+        }
+
+    }
+
 }
 

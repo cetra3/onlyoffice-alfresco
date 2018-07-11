@@ -1,9 +1,9 @@
 buildscript {
-    repositories {
-        mavenLocal()
+    repositories{
+        maven { url "https://mvn.parashift.com.au/public/" }
     }
     dependencies {
-        classpath group: 'com.parashift.amp', name: 'amp-plugin', version: '1.0-SNAPSHOT'
+        classpath 'com.parashift.amp:amp-plugin:1.1.1'
     }
 }
 

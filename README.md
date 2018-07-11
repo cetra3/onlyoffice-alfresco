@@ -2,7 +2,7 @@
 
 This Share plugin enables users to edit and preview Office documents within ONLYOFFICE from Alfresco Share. This will create a new **Edit in ONLYOFFICE** action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to Alfresco.
 
-Tested with Enterprise 5.0.\*, 5.1.\*, 5.2.\* and Community 5.1.\*
+Tested with Enterprise 5.0.\*, 5.1.\*, 5.2.\* and Community 5.1.\*, 5.2.\*
 
 ## Features
 
@@ -59,10 +59,7 @@ You will need:
 
 * Gradle
 
-* Parashift's alfresco amp plugin from here: https://bitbucket.org/parashift/alfresco-amp-plugin
-
 * Run `gradle amp` from the `share` and `repo` directories
-
 
 ## Installation
 
@@ -71,7 +68,6 @@ You will need:
 You will need an instance of ONLYOFFICE that is resolvable and connectable both from alfresco and any end clients. ONLYOFFICE must also be able to POST to alfresco directly.
 
 The easiest way to start an instance of ONLYOFFICE is to use Docker: https://github.com/ONLYOFFICE/Docker-DocumentServer
-
 
 ### Alfresco
 
