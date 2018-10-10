@@ -2,7 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.4.0]
+## [1.4.1] 2018-10-11
+
+### Fixed
+
+* Update compile dep to `5.2.f` to [fix](https://github.com/cetra3/onlyoffice-alfresco/issues/19) yanked `org.springframework.social:spring-social-facebook:1.0.0.RC1` artifact.
+
+
+## [1.4.0] 2018-07-11
 
 ### Fixed
 

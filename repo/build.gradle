@@ -21,7 +21,7 @@ allprojects {
 
 ext {
     alfresco = [:]
-    alfresco.version = "5.0.d"
+    alfresco.version = "5.2.f"
 
 }
 
@@ -42,20 +42,11 @@ configurations {
 }
 
 dependencies {
-    compile (group: "org.alfresco", name: "alfresco", version: "${alfresco.version}", classifier: "classes") {
-        exclude module: "alfresco-web-framework-commons"
-        exclude module: "commons-beanutils"
-        exclude group: "org.springframework"
-        exclude group: "org.mybatis"
-    }
 
-    compile 'org.json:json:20141113'
-
+    compile (group: "org.alfresco", name: "alfresco", version: "${alfresco.version}", classifier: "classes")
     compile ('com.monitorjbl:xlsx-streamer:1.0.2') { transitive = false }
-    compile 'org.springframework:spring-context:3.0.0.RELEASE'
-    compile 'org.springframework:spring-beans:3.0.0.RELEASE'
-    compile 'org.springframework:spring-context-support:3.0.5.RELEASE'
-
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+ 
     amp ('com.monitorjbl:xlsx-streamer:1.0.2') { transitive = false }
 }
 
