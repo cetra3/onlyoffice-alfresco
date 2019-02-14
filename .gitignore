@@ -1,2 +1,7 @@
-.gradle/
-build/
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+target/

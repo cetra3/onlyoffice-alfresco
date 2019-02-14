@@ -2,7 +2,7 @@
 
 This plugin enables users to edit office documents from Alfresco Share using ONLYOFFICE Document Server.
 
-Tested with Alfresco 5.\*
+Tested with Alfresco 6.\*
 
 ## Features
 * Currently the following document formats can be opened and edited with this plugin: DOCX, XLSX, PPTX.
@@ -22,66 +22,42 @@ The easiest way to start an instance of ONLYOFFICE Document Server is to use [Do
 
 To start using ONLYOFFICE Document Server with Alfresco, the following steps must be performed for Ubuntu 14.04:
 
-> Steps **1** &mdash; **6** are only necessary if you for some reason plan to compile the ONLYOFFICE Alfresco module package yourself (e.g. edit the source code and compile it afterwards). If you do not want to do that and plan to use the already compiled module files, please skip to step **7** directly. The latest compiled package files are available [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases).
+> Steps **1** &mdash; **4** are only necessary if you for some reason plan to compile the ONLYOFFICE Alfresco module package yourself (e.g. edit the source code and compile it afterwards). If you do not want to do that and plan to use the already compiled module files, please skip to step **5** directly. The latest compiled package files are available [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases).
 
 
-1. Remove gradle in case it has already been installed (it is needed to install the latest available version later at the next step):
-```bash
-sudo apt-get remove gradle
-```
-
-2. Add the repository and install the latest version:
-```bash
-sudo add-apt-repository ppa:cwchien/gradle
-sudo apt-get update
-sudo apt-get install gradle
-```
-
-3. The latest stable Oracle Java version is necessary for the successful build. If you do not have it installed, use the following commands to install Oracle Java 8: 
+1. The latest stable Oracle Java version is necessary for the successful build. If you do not have it installed, use the following commands to install Oracle Java 8:
 ```bash
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
 sudo apt-get install oracle-java8-installer
 ```
 
-4. [Build](https://bitbucket.org/parashift/alfresco-amp-plugin) the necessary dependencies:
-```bash
-git clone https://github.com/yeyan/alfresco-amp-plugin.git
-cd alfresco-amp-plugin
-gradle publish
-```
+2. Install latest Maven:
+Installation process is described [here](https://maven.apache.org/install.html)
 
-5. Download the ONLYOFFICE Alfresco module package source code: 
+3. Download the ONLYOFFICE Alfresco module package source code:
 ```bash
-cd ..
 git clone https://github.com/onlyoffice/onlyoffice-alfresco.git
 ```
 
-6. Compile packages in the `repo` and `share` directories: 
+4. Compile packages in the `repo` and `share` directories:
 ```bash
-cd onlyoffice-alfresco/repo/
-gradle amp
-cd ../share/
-gradle amp
+cd onlyoffice-alfresco/
+mvn clean install
 ```
 
-7. Upload the compiled **\*.amp** packages to directories accordingly for your Alfresco installation:
-* from `onlyoffice-alfresco/repo/build/amp` to the `amps/` for Alfresco repository,
-* from `onlyoffice-alfresco/share/build/amp` to `amps_share/` for Share.
+5. Upload the compiled **\*.jar** packages to directories accordingly for your Alfresco installation:
+* from `onlyoffice-alfresco/repo/target/` to the `/webapps/alfresco/WEB-INF/lib/` for Alfresco repository,
+* from `onlyoffice-alfresco/share/target/` to `/webapps/share/WEB-INF/lib/` for Share.
 > You can download the already compiled package files [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases) and place them to the respective directories.
 
-8. Installing an [Alfresco Module Package](http://docs.alfresco.com/5.2/tasks/amp-install.html) to Alfresco:
-```bash
-sudo bin/apply_amps.sh
-```
-You will see the two new modules being installed during the installation process. Press Enter to continue the installation.
-
-9. Add the **onlyoffice.url** property to `alfresco-global.properties`: 
+6. Add the **onlyoffice.url** property to `alfresco-global.properties`:
 ```
 onlyoffice.url=http://documentserver/
 ```
+> Probably located here `/usr/local/tomcat/shared/classes/alfresco-global.properties`
 
-10. Restart Alfresco:
+7. Restart Alfresco:
 ```bash
 sudo ./alfresco.sh stop
 sudo ./alfresco.sh start
