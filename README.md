@@ -2,7 +2,7 @@
 
 This plugin enables users to edit office documents from Alfresco Share using ONLYOFFICE Document Server.
 
-Tested with Alfresco 6.\*
+Tested with [Alfresco 6.\*](https://github.com/keensoft/alfresco-docker-template/tree/master/templates/201806-GA)
 
 ## Features
 * Currently the following document formats can be opened and edited with this plugin: DOCX, XLSX, PPTX.
@@ -52,10 +52,21 @@ mvn clean install
 > You can download the already compiled package files [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases) and place them to the respective directories.
 
 6. Add the **onlyoffice.url** property to `alfresco-global.properties`:
+> Probably located here `/usr/local/tomcat/shared/classes/alfresco-global.properties`
 ```
 onlyoffice.url=http://documentserver/
 ```
-> Probably located here `/usr/local/tomcat/shared/classes/alfresco-global.properties`
+
+> You may also want to change these (make sure that Document Server will be able to POST to Alfresco)
+```
+alfresco.host=<hostname>
+alfresco.port=443
+alfresco.protocol=https
+
+share.host=<hostname>
+share.port=443
+share.protocol=https
+```
 
 7. Restart Alfresco:
 ```bash
