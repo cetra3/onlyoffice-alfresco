@@ -4,6 +4,7 @@ This plugin enables users to edit office documents from Alfresco Share using ONL
 
 Tested with [Alfresco 6.\*](https://github.com/keensoft/alfresco-docker-template/tree/master/templates/201806-GA)
 
+
 ## Features
 * Currently the following document formats can be opened and edited with this plugin: DOCX, XLSX, PPTX.
 * The plugin will create a new **Edit in ONLYOFFICE** menu option within the document library for Office documents.
@@ -24,55 +25,54 @@ To start using ONLYOFFICE Document Server with Alfresco, the following steps mus
 
 > Steps **1** &mdash; **4** are only necessary if you for some reason plan to compile the ONLYOFFICE Alfresco module package yourself (e.g. edit the source code and compile it afterwards). If you do not want to do that and plan to use the already compiled module files, please skip to step **5** directly. The latest compiled package files are available [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases).
 
-
 1. The latest stable Oracle Java version is necessary for the successful build. If you do not have it installed, use the following commands to install Oracle Java 8:
-```bash
-sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
-```
+    ```bash
+    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-get update
+    sudo apt-get install oracle-java8-installer
+    ```
 
 2. Install latest Maven:
 Installation process is described [here](https://maven.apache.org/install.html)
 
 3. Download the ONLYOFFICE Alfresco module package source code:
-```bash
-git clone https://github.com/onlyoffice/onlyoffice-alfresco.git
-```
+    ```bash
+    git clone https://github.com/onlyoffice/onlyoffice-alfresco.git
+    ```
 
 4. Compile packages in the `repo` and `share` directories:
-```bash
-cd onlyoffice-alfresco/
-mvn clean install
-```
+    ```bash
+    cd onlyoffice-alfresco/
+    mvn clean install
+    ```
 
 5. Upload the compiled **\*.jar** packages to directories accordingly for your Alfresco installation:
-* from `onlyoffice-alfresco/repo/target/` to the `/webapps/alfresco/WEB-INF/lib/` for Alfresco repository,
-* from `onlyoffice-alfresco/share/target/` to `/webapps/share/WEB-INF/lib/` for Share.
-> You can download the already compiled package files [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases) and place them to the respective directories.
+    * from `onlyoffice-alfresco/repo/target/` to the `/webapps/alfresco/WEB-INF/lib/` for Alfresco repository,
+    * from `onlyoffice-alfresco/share/target/` to `/webapps/share/WEB-INF/lib/` for Share.
+    > You can download the already compiled package files [here](https://github.com/onlyoffice/onlyoffice-alfresco/releases) and place them to the respective directories.
 
 6. Add the **onlyoffice.url** property to `alfresco-global.properties`:
-> Probably located here `/usr/local/tomcat/shared/classes/alfresco-global.properties`
-```
-onlyoffice.url=http://documentserver/
-```
+    > Probably located here `/usr/local/tomcat/shared/classes/alfresco-global.properties`
+    ```
+    onlyoffice.url=http://documentserver/
+    ```
 
-> You may also want to change these (make sure that Document Server will be able to POST to Alfresco)
-```
-alfresco.host=<hostname>
-alfresco.port=443
-alfresco.protocol=https
+    > You may also want to change these (make sure that Document Server will be able to POST to Alfresco)
+    ```
+    alfresco.host=<hostname>
+    alfresco.port=443
+    alfresco.protocol=https
 
-share.host=<hostname>
-share.port=443
-share.protocol=https
-```
+    share.host=<hostname>
+    share.port=443
+    share.protocol=https
+    ```
 
 7. Restart Alfresco:
-```bash
-sudo ./alfresco.sh stop
-sudo ./alfresco.sh start
-```
+    ```bash
+    sudo ./alfresco.sh stop
+    sudo ./alfresco.sh start
+    ```
 
 The module can be checked in administrator tools at `share/page/console/admin-console/module-package` in Alfresco.
 
