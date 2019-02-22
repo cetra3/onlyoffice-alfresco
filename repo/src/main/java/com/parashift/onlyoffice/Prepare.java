@@ -7,11 +7,13 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.UrlUtil;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.webscripts.AbstractWebScript;
+import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,7 @@ import java.util.Properties;
  * Sends Alfresco Share the necessaries to build up what information is needed for the OnlyOffice server
  */
  /*
-    Copyright (c) Ascensio System SIA 2017. All rights reserved.
+    Copyright (c) Ascensio System SIA 2019. All rights reserved.
     http://www.onlyoffice.com
 */
 @Component(value = "webscript.onlyoffice.prepare.get")
@@ -66,17 +68,21 @@ public class Prepare extends AbstractWebScript {
             String callbackUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/callback?nodeRef=" + nodeRef.toString() + "&alf_ticket=" + authenticationService.getCurrentTicket();
 
             JSONObject responseJson = new JSONObject();
-            responseJson.put("docUrl", contentUrl);
-            responseJson.put("callbackUrl", callbackUrl);
-            responseJson.put("onlyofficeUrl", globalProp.getOrDefault("onlyoffice.url", "http://127.0.0.1/"));
-            responseJson.put("key", key);
-            responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 
-            logger.debug("Sending JSON prepare object");
-            logger.debug(responseJson.toString(3));
+            try {
+                responseJson.put("docUrl", contentUrl);
+                responseJson.put("callbackUrl", callbackUrl);
+                responseJson.put("onlyofficeUrl", globalProp.getOrDefault("onlyoffice.url", "http://127.0.0.1/"));
+                responseJson.put("key", key);
+                responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 
-            response.getWriter().write(responseJson.toString(3));
+                logger.debug("Sending JSON prepare object");
+                logger.debug(responseJson.toString(3));
 
+                response.getWriter().write(responseJson.toString(3));
+            } catch (JSONException ex) {
+                throw new WebScriptException("Unable to serialize JSON: " + ex.getMessage());
+            }
         }
     }
 }

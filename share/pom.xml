@@ -1,64 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.parashift.onlyoffice-alfresco</groupId>
-  <artifactId>onlyoffice-integration-share</artifactId>
-  <version>1.0.5</version>
-  <name>ONLYOFFICE Alfresco Integration</name>
-  <packaging>amp</packaging>
-  <description>This Module integrates Alfresco Share with ONLYOFFICE</description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>onlyoffice-integration-share-jar</artifactId>
+    <name>ONLYOFFICE Alfresco Share Integration</name>
+    <packaging>jar</packaging>
+    <description>Share JAR Module that creates a new 'Edit in ONLYOFFICE' menu option within the document library for Office documents - part of ONLYOFFICE Alfresco Repo Integration</description>
 
-  <parent>
-    <groupId>org.alfresco.maven</groupId>
-    <artifactId>alfresco-sdk-parent</artifactId>
-    <version>2.0.0</version>
-  </parent>
+    <parent>
+        <groupId>com.onlyoffice.alfresco</groupId>
+        <artifactId>onlyoffice-integration</artifactId>
+        <version>2.0.0</version>
+    </parent>
 
+    <properties>
+    </properties>
 
-  <dependencyManagement>
+    <!-- Following dependencies are needed for compiling Java code in src/main/java;
+         <scope>provided</scope> is inherited for each of the following;
+         for more info, please refer to alfresco-platform-distribution POM -->
     <dependencies>
-      <dependency>
-        <groupId>${alfresco.groupId}</groupId>
-        <artifactId>alfresco-platform-distribution</artifactId>
-        <version>${alfresco.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>${alfresco.groupId}</groupId>
-      <artifactId>share</artifactId>
-      <version>${alfresco.version}</version>
-      <classifier>classes</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.extensions.surf</groupId>
-      <artifactId>spring-surf-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <directory>${project.basedir}/build</directory>
-    <finalName>${project.artifactId}-${project.version}</finalName>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>enterprise</id>
-      <dependencies>
         <dependency>
-          <groupId>${alfresco.groupId}</groupId>
-          <artifactId>share-enterprise</artifactId>
-          <version>${alfresco.version}</version>
-          <classifier>classes</classifier>
-          <scope>provided</scope>
+            <groupId>${alfresco.groupId}</groupId>
+            <artifactId>share</artifactId>
+            <classifier>classes</classifier>
         </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
+
+        <dependency>
+            <groupId>org.alfresco.surf</groupId>
+            <artifactId>spring-surf-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
