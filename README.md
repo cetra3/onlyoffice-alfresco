@@ -77,6 +77,17 @@ Installation process is described [here](https://maven.apache.org/install.html)
 The module can be checked in administrator tools at `share/page/console/admin-console/module-package` in Alfresco.
 
 
+## Building from docker-compose
+
+Other way to build ONLYOFFICE Alfresco module package is using docker-compose file.
+
+Use this command from project directory:
+
+```bash
+docker-compose up
+```
+
+
 ## How it works
 
 The ONLYOFFICE integration follows the API documented [here](https://api.onlyoffice.com/editors/basic):
