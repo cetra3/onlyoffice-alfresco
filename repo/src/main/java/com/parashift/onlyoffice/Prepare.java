@@ -18,12 +18,10 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by cetra on 20/10/15.
@@ -49,8 +47,8 @@ public class Prepare extends AbstractWebScript {
     @Autowired
     SysAdminParams sysAdminParams;
 
-    @Resource(name = "global-properties")
-    Properties globalProp;
+    @Autowired
+    ConfigManager configManager;
 
     @Override
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
@@ -72,7 +70,7 @@ public class Prepare extends AbstractWebScript {
             try {
                 responseJson.put("docUrl", contentUrl);
                 responseJson.put("callbackUrl", callbackUrl);
-                responseJson.put("onlyofficeUrl", globalProp.getOrDefault("onlyoffice.url", "http://127.0.0.1/"));
+                responseJson.put("onlyofficeUrl", configManager.getOrDefault("url", "http://127.0.0.1/"));
                 responseJson.put("key", key);
                 responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 

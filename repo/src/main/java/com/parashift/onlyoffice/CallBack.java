@@ -26,7 +26,6 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Properties;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -53,8 +52,8 @@ public class CallBack extends AbstractWebScript {
     @Autowired
     ContentService contentService;
 
-    @Resource(name = "global-properties")
-    Properties globalProp;
+    @Autowired
+    ConfigManager configManager;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -126,7 +125,7 @@ public class CallBack extends AbstractWebScript {
     }
 
     private void checkCert() {
-        String cert = (String) globalProp.getOrDefault("onlyoffice.cert", "no");
+        String cert = (String) configManager.getOrDefault("cert", "no");
         if (cert.equals("true")) {
             TrustManager[] trustAllCerts = new TrustManager[]
             {
