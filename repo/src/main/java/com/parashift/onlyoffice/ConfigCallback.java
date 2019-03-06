@@ -41,6 +41,9 @@ public class ConfigCallback extends AbstractWebScript {
             Matcher m = urlRegex.matcher(docUrl);
 
             if (m.matches()) {
+                if (!docUrl.endsWith("/")) {
+                    docUrl = docUrl + "/";
+                }
                 configManager.set("url", docUrl);
             } else {
                 response.getWriter().write("{\"success\": false, \"message\": \"Unable to parse hostname\"}");
