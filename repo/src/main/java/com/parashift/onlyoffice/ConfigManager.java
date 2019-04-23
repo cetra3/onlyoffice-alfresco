@@ -2,9 +2,9 @@ package com.parashift.onlyoffice;
 
 import org.alfresco.service.cmr.attributes.AttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.Properties;
 
 /*
@@ -17,7 +17,8 @@ public class ConfigManager {
     @Autowired
     AttributeService attributeService;
 
-    @Resource(name = "global-properties")
+    @Autowired
+    @Qualifier("global-properties")
     Properties globalProp;
 
     public void set(String key, String value) {

@@ -13,13 +13,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -46,7 +46,8 @@ public class CallBack extends AbstractWebScript {
     @Autowired
     LockService lockService;
 
-    @Resource(name = "policyBehaviourFilter")
+    @Autowired
+    @Qualifier("policyBehaviourFilter")
     BehaviourFilter behaviourFilter;
 
     @Autowired
