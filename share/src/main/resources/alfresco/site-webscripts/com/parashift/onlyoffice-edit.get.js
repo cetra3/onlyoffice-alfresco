@@ -9,6 +9,7 @@ model.docTitle = pObj.docTitle;
 model.docUrl = pObj.docUrl;
 model.key = pObj.key;
 model.onlyofficeUrl = pObj.onlyofficeUrl;
+model.token = pObj.token || "";
 
 model.userId = user.id;
 model.firstName = user.firstName;

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Base64;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -56,6 +57,9 @@ public class CallBack extends AbstractWebScript {
     @Autowired
     ConfigManager configManager;
 
+    @Autowired
+    JwtManager jwtManager;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -64,8 +68,35 @@ public class CallBack extends AbstractWebScript {
         logger.debug("Received JSON Callback");
         try {
             JSONObject callBackJSon = new JSONObject(request.getContent().getContent());
-
             logger.debug(callBackJSon.toString(3));
+
+            if (jwtManager.jwtEnabled()) {
+                String token = callBackJSon.optString("token");
+                Boolean inBody = true;
+
+                if (token == null || token == "") {
+                    String jwth = (String) configManager.getOrDefault("jwtheader", "");
+                    String header = (String) request.getHeader(jwth.isEmpty() ? "Authorization" : jwth);
+                    token = (header != null && header.startsWith("Bearer ")) ? header.substring(7) : header;
+                    inBody = false;
+                }
+
+                if (token == null || token == "") {
+                    response.setStatus(403);
+                    response.getWriter().write("{\"error\": 0, \"message\": \"Expected JWT\"}");
+                    return;
+                }
+
+                if (!jwtManager.verify(token)) {
+                    response.setStatus(403);
+                    response.getWriter().write("{\"error\": 0, \"message\": \"Wrong JWT\"}");
+                    return;
+                }
+
+                if (inBody) {
+                    callBackJSon = new JSONObject(new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), "UTF-8"));
+                }
+            }
 
             String[] keyParts = callBackJSon.getString("key").split("_");
             NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + keyParts[0]);

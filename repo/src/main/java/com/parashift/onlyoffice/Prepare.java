@@ -50,6 +50,9 @@ public class Prepare extends AbstractWebScript {
     @Autowired
     ConfigManager configManager;
 
+    @Autowired
+    JwtManager jwtManager;
+
     @Override
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
         if (request.getParameter("nodeRef") != null) {
@@ -74,12 +77,18 @@ public class Prepare extends AbstractWebScript {
                 responseJson.put("key", key);
                 responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 
+                if (jwtManager.jwtEnabled()) {
+                    responseJson.put("token", jwtManager.createToken(responseJson));
+                }
+
                 logger.debug("Sending JSON prepare object");
                 logger.debug(responseJson.toString(3));
 
                 response.getWriter().write(responseJson.toString(3));
             } catch (JSONException ex) {
                 throw new WebScriptException("Unable to serialize JSON: " + ex.getMessage());
+            } catch (Exception ex) {
+                throw new WebScriptException("Unable to create JWT token: " + ex.getMessage());
             }
         }
     }
