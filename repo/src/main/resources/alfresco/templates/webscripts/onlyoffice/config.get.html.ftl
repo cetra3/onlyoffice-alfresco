@@ -18,7 +18,17 @@
          <input class="value" id="onlyurl" name="url" size="35" placeholder="http://docserver/" title="${msg('onlyoffice-config.doc-url-tooltip')}" pattern="http(s)?://.*" value="${callbackurl}" />
       </div>
       <div class="control field">
-         <input class="value" id="onlycert" name="cert" type="checkbox" ${callbackurl} />
+         <label class="label" for="jwtsecret">${msg("onlyoffice-config.jwt-secret")}</label>
+         <br/>
+         <input class="value" id="jwtsecret" name="url" size="35" value="${jwtsecret}" />
+      </div>
+      <div class="control field">
+         <label class="label" for="jwtheader">${msg("onlyoffice-config.jwt-header")}</label>
+         <br/>
+         <input class="value" id="jwtheader" name="url" size="35" title="${msg('onlyoffice-config.jwt-header-tooltip')}" value="${jwtheader}" />
+      </div>
+      <div class="control field">
+         <input class="value" id="onlycert" name="cert" type="checkbox" ${cert} />
          <label class="label" for="onlycert">${msg("onlyoffice-config.ignore-ssl-cert")}</label>
       </div>
       <input id="postonlycfg" type="button" value="${msg('onlyoffice-config.save-btn')}"/>
@@ -31,6 +41,8 @@
    (function() {
       var url = document.getElementById("onlyurl");
       var cert = document.getElementById("onlycert");
+      var jwts = document.getElementById("jwtsecret");
+      var jwth = document.getElementById("jwtheader");
 
       var form = document.getElementById("docservcfg");
       var btn = document.getElementById("postonlycfg");
@@ -72,8 +84,10 @@
          var reg = RegExp(url.pattern);
          if (!reg.test(url.value)) { return null; }
 
-         obj.url = url.value;
+         obj.url = url.value.trim();
          obj.cert = cert.checked.toString();
+         obj.jwtsecret = jwts.value.trim();
+         obj.jwtheader = jwth.value.trim();
 
          return obj;
       };
