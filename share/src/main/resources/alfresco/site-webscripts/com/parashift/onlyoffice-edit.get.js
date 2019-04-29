@@ -14,4 +14,4 @@ model.token = pObj.token || "";
 model.userId = user.id;
 model.firstName = user.firstName;
 model.lastName = user.lastName;
-model.lang = pObj.lang;
+model.lang = locale ? locale.replace("_", "-") : "en-US";
