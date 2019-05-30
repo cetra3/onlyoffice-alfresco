@@ -1,12 +1,9 @@
 package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.UrlUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
@@ -36,22 +32,17 @@ public class Prepare extends AbstractWebScript {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
     @Autowired
     NodeService nodeService;
-
-    @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    SysAdminParams sysAdminParams;
 
     @Autowired
     ConfigManager configManager;
 
     @Autowired
     JwtManager jwtManager;
+
+    @Autowired
+    Util util;
 
     @Override
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
@@ -64,9 +55,9 @@ public class Prepare extends AbstractWebScript {
             response.setContentType("application/json; charset=utf-8");
             response.setContentEncoding("UTF-8");
 
-            String contentUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/node/content/workspace/SpacesStore/" + nodeRef.getId() + "?alf_ticket=" + authenticationService.getCurrentTicket();
-            String key = nodeRef.getId() + "_" + dateFormat.format(properties.get(ContentModel.PROP_MODIFIED));
-            String callbackUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/callback?nodeRef=" + nodeRef.toString() + "&alf_ticket=" + authenticationService.getCurrentTicket();
+            String contentUrl = util.getContentUrl(nodeRef);
+            String key = util.getKey(nodeRef);
+            String callbackUrl = util.getCallbackUrl(nodeRef);
 
             JSONObject responseJson = new JSONObject();
 

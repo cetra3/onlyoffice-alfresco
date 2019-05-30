@@ -5,8 +5,11 @@ import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentService;
+import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +62,15 @@ public class CallBack extends AbstractWebScript {
 
     @Autowired
     JwtManager jwtManager;
+
+    @Autowired
+    NodeService nodeService;
+
+    @Autowired
+    MimetypeService mimetypeService;
+
+    @Autowired
+    Converter converterService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -144,15 +156,28 @@ public class CallBack extends AbstractWebScript {
 
     private boolean updateNode(NodeRef nodeRef, String url) {
         logger.debug("Retrieving URL:{}", url);
+            nodeService.getType(nodeRef);
+            ContentData contentData = (ContentData) nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT);
+            String mimeType = contentData.getMimetype();
 
-        try {
-            checkCert();
-            InputStream in = new URL( url ).openStream();
-            contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
-        } catch (IOException e) {
-            logger.error(ExceptionUtils.getFullStackTrace(e));
-            return false;
-        }
+            if (converterService.shouldConvertBack(mimeType)) {
+                try {
+                    logger.debug("Should convert back");
+                    url = converterService.convert(nodeRef.getId(), "docx", mimetypeService.getExtension(mimeType), url);
+                } catch (Exception e) {
+                    logger.error(ExceptionUtils.getFullStackTrace(e));
+                    return false;
+                }
+            }
+
+            try {
+                checkCert();
+                InputStream in = new URL( url ).openStream();
+                contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
+            } catch (IOException e) {
+                logger.error(ExceptionUtils.getFullStackTrace(e));
+                return false;
+            }
         return true;
     }
 

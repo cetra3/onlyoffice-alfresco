@@ -9,4 +9,8 @@
 
     <context:component-scan base-package="com.parashift.onlyoffice" />
 
+    <bean id="transformer.onlyoffice"
+          class="com.parashift.onlyoffice.Converter"
+          parent="baseContentTransformer" >
+    </bean>
 </beans>
