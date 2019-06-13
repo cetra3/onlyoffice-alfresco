@@ -1,6 +1,5 @@
 package com.parashift.onlyoffice;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +23,6 @@ import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ConvertAction extends ActionExecuterAbstractBase {
 
-    // private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private org.apache.log4j.Logger logger;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     Converter converterService;
@@ -61,20 +56,6 @@ public class ConvertAction extends ActionExecuterAbstractBase {
 
     @Autowired
     Util util;
-
-    public ConvertAction() {
-        logger = org.apache.log4j.Logger.getLogger(this.getClass());
-        
-        PatternLayout layout = new PatternLayout("%d{ISO8601} [%t] %-5p %c %x - %m%n");
-
-        RollingFileAppender fileAppender;
-        try {
-            fileAppender = new RollingFileAppender(layout, "onlyoffice.log");
-            logger.addAppender(fileAppender);
-            logger.setLevel(Level.ALL);
-        } catch (IOException e) {
-        }
-    }
 
     @Override
     protected void executeImpl(Action action, NodeRef actionedUponNodeRef) {
