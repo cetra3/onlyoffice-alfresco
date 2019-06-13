@@ -156,7 +156,6 @@ public class CallBack extends AbstractWebScript {
 
     private boolean updateNode(NodeRef nodeRef, String url) {
         logger.debug("Retrieving URL:{}", url);
-            nodeService.getType(nodeRef);
             ContentData contentData = (ContentData) nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT);
             String mimeType = contentData.getMimetype();
 

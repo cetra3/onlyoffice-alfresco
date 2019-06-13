@@ -75,6 +75,14 @@ public class Converter extends AbstractContentTransformer2 {
         add("text/csv");
     }};
 
+    public String GetModernMimetype(String mimetype) {
+        if (TransformableDict.containsKey(mimetype)) {
+            return TransformableDict.get(mimetype).iterator().next();
+        } else {
+            return null;
+        }
+    }
+
     public Pair<String, ContentReader> GetConversion(String key) {
         if (OnGoingConversions.containsKey(key)) {
             return OnGoingConversions.get(key);

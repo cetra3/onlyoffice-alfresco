@@ -13,4 +13,9 @@
           class="com.parashift.onlyoffice.Converter"
           parent="baseContentTransformer" >
     </bean>
+
+    <bean id="onlyoffice-convert"
+		  class="com.parashift.onlyoffice.ConvertAction"
+		  parent="action-executer">
+    </bean>
 </beans>
