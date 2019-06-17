@@ -12,7 +12,11 @@
     <bean id="evaluator.doclib.action.onlyofficeEditMimetype" parent="evaluator.doclib.action.isMimetype">
         <property name="mimetypes">
             <list>
-                <value>text/html</value>
+                <value>application/vnd.openxmlformats-officedocument.wordprocessingml.document</value>
+                <value>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</value>
+                <value>application/vnd.openxmlformats-officedocument.presentationml.presentation</value>
+                <value>text/plain</value>
+                <value>text/csv</value>
             </list>
         </property>
     </bean>

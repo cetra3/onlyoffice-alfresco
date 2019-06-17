@@ -5,6 +5,7 @@
             <action id="document-onlyoffice-edit" type="link" label="actions.document.onlyoffice-edit">
                 <param name="href">onlyoffice-edit?nodeRef={node.nodeRef}</param>
                 <param name="target">_blank</param>
+                <evaluator>evaluator.doclib.action.onlyofficeEditMimetype</evaluator>
                 <permissions>
                     <permission allow="true">Write</permission>
                 </permissions>
