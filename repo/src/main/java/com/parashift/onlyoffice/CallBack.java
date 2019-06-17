@@ -84,6 +84,14 @@ public class CallBack extends AbstractWebScript {
 
             if (jwtManager.jwtEnabled()) {
                 String token = callBackJSon.optString("token");
+                Boolean inBody = true;
+
+                if (token == null || token == "") {
+                    String jwth = (String) configManager.getOrDefault("jwtheader", "");
+                    String header = (String) request.getHeader(jwth.isEmpty() ? "Authorization" : jwth);
+                    token = (header != null && header.startsWith("Bearer ")) ? header.substring(7) : header;
+                    inBody = false;
+                }
 
                 if (token == null || token == "") {
                     response.setStatus(403);
@@ -97,7 +105,9 @@ public class CallBack extends AbstractWebScript {
                     return;
                 }
 
-                callBackJSon = new JSONObject(new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), "UTF-8"));
+                if (inBody) {
+                    callBackJSon = new JSONObject(new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), "UTF-8"));
+                }
             }
 
             String[] keyParts = callBackJSon.getString("key").split("_");

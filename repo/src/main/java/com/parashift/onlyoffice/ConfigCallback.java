@@ -52,6 +52,7 @@ public class ConfigCallback extends AbstractWebScript {
 
             configManager.set("cert", data.getString("cert"));
             configManager.set("jwtsecret", data.getString("jwtsecret"));
+            configManager.set("jwtheader", data.getString("jwtheader"));
 
             response.getWriter().write("{\"success\": true}");
         } catch (JSONException ex) {
