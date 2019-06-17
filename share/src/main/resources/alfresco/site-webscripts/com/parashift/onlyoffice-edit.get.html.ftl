@@ -21,43 +21,7 @@
         <div id="placeholder"></div>
     </div>
     <script>
-
-    var docName = "${docTitle}";
-    var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
-    var documentType = getDocumentType(docType);
-
-    var config = {
-        type: "desktop",
-        width: "100%",
-        height: "100%",
-        documentType: documentType,
-        document: {
-            title: docName,
-            url: "${docUrl}",
-            fileType: docType,
-            key: "${key}",
-            permissions: {
-                edit: true
-            },
-        },
-        editorConfig: {
-            lang: "${lang}",
-            mode: "edit",
-            callbackUrl: "${callbackUrl}",
-            user: {
-                id: "${userId}",
-                firstname: "${firstName}",
-                lastname: "${lastName}",
-                name: "${firstName} ${lastName}",
-            }
-        },
-        events: {
-        },
-    };
-
-    var jwt = "${token}";
-    if (jwt) config.token = jwt;
-
+    var config = JSON.parse('${config}');
     new DocsAPI.DocEditor("placeholder", config);
     </script>
 </body>
