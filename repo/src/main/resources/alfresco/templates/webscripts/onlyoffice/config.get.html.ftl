@@ -91,6 +91,7 @@
          msg.innerText = "";
       };
 
+      var msgTimeout = null;
       var showMessage = function(message, error) {
          if (error) {
                msg.classList.add("error");
@@ -98,6 +99,11 @@
 
          msg.innerText = message;
          msg.classList.remove("hidden");
+
+         if (msgTimeout != null) {
+            clearTimeout(msgTimeout);
+         }
+         msgTimeout = setTimeout(hideMessage, 3000);
       };
 
       btn.onclick = function() {

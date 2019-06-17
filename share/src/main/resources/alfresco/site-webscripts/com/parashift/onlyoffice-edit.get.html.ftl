@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 
-    <title>ONLYOFFICE™</title>
+    <title>${docTitle} - ONLYOFFICE</title>
 
     <link href="${url.context}/res/components/onlyoffice/onlyoffice.css" type="text/css" rel="stylesheet">
 
