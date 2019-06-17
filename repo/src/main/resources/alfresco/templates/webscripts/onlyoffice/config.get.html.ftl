@@ -37,7 +37,6 @@
       var url = document.getElementById("onlyurl");
       var cert = document.getElementById("onlycert");
       var jwts = document.getElementById("jwtsecret");
-      var jwth = document.getElementById("jwtheader");
 
       var form = document.getElementById("docservcfg");
       var btn = document.getElementById("postonlycfg");
@@ -82,7 +81,6 @@
          obj.url = url.value.trim();
          obj.cert = cert.checked.toString();
          obj.jwtsecret = jwts.value.trim();
-         obj.jwtheader = jwth.value.trim();
 
          return obj;
       };

@@ -43,6 +43,9 @@ public class Converter extends AbstractContentTransformer2 {
     ConfigManager configManager;
 
     @Autowired
+    JwtManager jwtManager;
+
+    @Autowired
     Util util;
 
     private static Map<String, Pair<String, ContentReader>> OnGoingConversions = new HashMap<String, Pair<String, ContentReader>>();
@@ -138,6 +141,12 @@ public class Converter extends AbstractContentTransformer2 {
             HttpPost request = new HttpPost(configManager.getOrDefault("url", "http://127.0.0.1/") + "ConvertService.ashx");
             request.setEntity(requestEntity);
             request.setHeader("Accept", "application/json");
+
+            if (jwtManager.jwtEnabled()) {
+                String token = jwtManager.createToken(body);
+                body.put("token", token);
+                request.setHeader((String) configManager.getOrDefault("jwtheader", "Authorization"), "Bearer " + token);
+            }
 
             logger.debug("Sending POST to Docserver: " + body.toString());
             try(CloseableHttpResponse response = httpClient.execute(request)) {
