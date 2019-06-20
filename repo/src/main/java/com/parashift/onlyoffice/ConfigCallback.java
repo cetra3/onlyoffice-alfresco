@@ -132,8 +132,11 @@ public class ConfigCallback extends AbstractWebScript {
 
             if (jwtManager.jwtEnabled()) {
                 String token = jwtManager.createToken(body);
+                JSONObject payloadBody = new JSONObject();
+                payloadBody.put("payload", body);
+                String headerToken = jwtManager.createToken(body);
                 body.put("token", token);
-                request.setHeader((String) configManager.getOrDefault("jwtheader", "Authorization"), "Bearer " + token);
+                request.setHeader((String) configManager.getOrDefault("jwtheader", "Authorization"), "Bearer " + headerToken);
             }
 
             StringEntity requestEntity = new StringEntity(body.toString(), ContentType.APPLICATION_JSON);

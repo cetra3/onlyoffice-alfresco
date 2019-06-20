@@ -105,8 +105,12 @@ public class CallBack extends AbstractWebScript {
                     return;
                 }
 
+                JSONObject bodyFromToken = new JSONObject(new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), "UTF-8"));
+
                 if (inBody) {
-                    callBackJSon = new JSONObject(new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), "UTF-8"));
+                    callBackJSon = bodyFromToken;
+                } else {
+                    callBackJSon = bodyFromToken.getJSONObject("payload");
                 }
             }
 
