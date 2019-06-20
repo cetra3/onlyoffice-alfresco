@@ -65,6 +65,7 @@ public class ConvertAction extends ActionExecuterAbstractBase {
             String mime = reader.getMimetype();
 
             String targetMimeParam = converterService.GetModernMimetype(mime);
+            if (targetMimeParam == null) return;
             String newName = nodeName.substring(0, nodeName.lastIndexOf('.') + 1)
                     + mimetypeService.getExtension(targetMimeParam);
     
