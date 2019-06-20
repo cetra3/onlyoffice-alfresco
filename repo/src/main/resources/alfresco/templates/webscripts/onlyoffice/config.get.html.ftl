@@ -29,7 +29,7 @@
       <input id="postonlycfg" type="button" value="${msg('onlyoffice-config.save-btn')}"/>
    </form>
    <br>
-   <span data-saved="${msg('onlyoffice-config.saved')}" data-error="${msg('onlyoffice-config.error')}" id="onlyresponse" class="message hidden"></span>
+   <span data-saved="${msg('onlyoffice-config.saved')}" data-error="${msg('onlyoffice-config.error')}" data-mixedcontent="${msg('onlyoffice-config.mixedcontent')}" data-jsonparse="${msg('onlyoffice-config.jsonparse')}" data-docservunreachable="${msg('onlyoffice-config.docservunreachable')}" data-docservcommand="${msg('onlyoffice-config.docservcommand')}" data-docservconvert="${msg('onlyoffice-config.docservconvert')}" data-jwterror="${msg('onlyoffice-config.jwterror')}" data-statuscode="${msg('onlyoffice-config.statuscode')}" id="onlyresponse" class="message hidden"></span>
 </div>
 
 <script type="text/javascript">//<![CDATA[
@@ -58,14 +58,14 @@
          btn.disabled = false;
 
          if (xhr.status != 200) {
-               showMessage(msg.dataset.error + " status code " + xhr.status, true);
+               showMessage(msg.dataset.error + " " + msg.dataset.statuscode + " " + xhr.status, true);
                return;
          }
 
          var response = JSON.parse(xhr.response);
 
          if (!response.success) {
-               showMessage(msg.dataset.error + " " + response.message, true);
+               showMessage(msg.dataset.error + " " + msg.dataset[response.message], true);
                return;
          }
 

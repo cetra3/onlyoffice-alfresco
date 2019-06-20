@@ -22,7 +22,7 @@ public class ConfigManager {
     Properties globalProp;
 
     public void set(String key, String value) {
-        attributeService.setAttribute(value, formKey(key));
+        attributeService.setAttribute(value == null || value.isEmpty() ? null : value, formKey(key));
     }
 
     public Object get(String key) {

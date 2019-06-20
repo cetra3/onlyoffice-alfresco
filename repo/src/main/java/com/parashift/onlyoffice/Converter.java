@@ -127,7 +127,7 @@ public class Converter extends AbstractContentTransformer2 {
         }
     }
 
-    public String convert(String key, String srcType, String outType, String url) throws Exception {
+    public String convert(String key, String srcType, String outType, String url) throws SecurityException, Exception {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             JSONObject body = new JSONObject();
             body.put("async", false);
@@ -164,6 +164,8 @@ public class Converter extends AbstractContentTransformer2 {
                     } catch (Exception e) {
                         throw new Exception("Couldn't convert JSON from docserver: " + e.getMessage());
                     }
+
+                    if (!callBackJSon.isNull("error") && callBackJSon.getInt("error") == -8) throw new SecurityException();
                     
                     if (callBackJSon.isNull("endConvert") || !callBackJSon.getBoolean("endConvert") || callBackJSon.isNull("fileUrl")) {
                         throw new Exception("'endConvert' is false or 'fileUrl' is empty");

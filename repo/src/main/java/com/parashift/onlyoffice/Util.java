@@ -49,4 +49,8 @@ public class Util {
     public String getConversionUrl(String key) {
         return UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/converter?key=" + key + "&alf_ticket=" + authenticationService.getCurrentTicket();
     }
+
+    public String getTestConversionUrl() {
+        return UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/convertertest?alf_ticket=" + authenticationService.getCurrentTicket();
+    }
 }
