@@ -1,12 +1,13 @@
 package com.parashift.onlyoffice;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.cmr.security.PersonService.PersonInfo;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.UrlUtil;
+import org.alfresco.repo.i18n.MessageService;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -16,11 +17,11 @@ import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
+import org.springframework.extensions.webscripts.connector.User;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
@@ -36,19 +37,23 @@ public class Prepare extends AbstractWebScript {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
     @Autowired
     NodeService nodeService;
 
     @Autowired
-    AuthenticationService authenticationService;
+    MessageService mesService;
 
     @Autowired
-    SysAdminParams sysAdminParams;
+    PersonService personService;
 
     @Autowired
     ConfigManager configManager;
+
+    @Autowired
+    JwtManager jwtManager;
+
+    @Autowired
+    Util util;
 
     @Override
     public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
@@ -61,18 +66,59 @@ public class Prepare extends AbstractWebScript {
             response.setContentType("application/json; charset=utf-8");
             response.setContentEncoding("UTF-8");
 
-            String contentUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/api/node/content/workspace/SpacesStore/" + nodeRef.getId() + "?alf_ticket=" + authenticationService.getCurrentTicket();
-            String key = nodeRef.getId() + "_" + dateFormat.format(properties.get(ContentModel.PROP_MODIFIED));
-            String callbackUrl = UrlUtil.getAlfrescoUrl(sysAdminParams) + "/s/parashift/onlyoffice/callback?nodeRef=" + nodeRef.toString() + "&alf_ticket=" + authenticationService.getCurrentTicket();
+            String contentUrl = util.getContentUrl(nodeRef);
+            String key = util.getKey(nodeRef);
+            String callbackUrl = util.getCallbackUrl(nodeRef);
+            String username = AuthenticationUtil.getFullyAuthenticatedUser();
+            NodeRef person = personService.getPersonOrNull(username);
+            PersonInfo personInfo = null;
+            if (person != null) {
+                personInfo = personService.getPerson(person);
+            }
 
             JSONObject responseJson = new JSONObject();
+            JSONObject documentObject = new JSONObject();
+            JSONObject editorConfigObject = new JSONObject();
+            JSONObject userObject = new JSONObject();
+            JSONObject permObject = new JSONObject();
 
             try {
-                responseJson.put("docUrl", contentUrl);
-                responseJson.put("callbackUrl", callbackUrl);
+                String docTitle = (String) properties.get(ContentModel.PROP_NAME);
+                String docExt = docTitle.substring(docTitle.lastIndexOf(".") + 1).trim().toLowerCase();
+
+                responseJson.put("type", "desktop");
+                responseJson.put("width", "100%");
+                responseJson.put("height", "100%");
+                responseJson.put("documentType", getDocType(docExt));
+
+                responseJson.put("document", documentObject);
+                documentObject.put("title", docTitle);
+                documentObject.put("url", contentUrl);
+                documentObject.put("fileType", docExt);
+                documentObject.put("key", key);
+                documentObject.put("permissions", permObject);
+                permObject.put("edit", true);
+
+                responseJson.put("editorConfig", editorConfigObject);
+                editorConfigObject.put("lang", mesService.getLocale().toLanguageTag());
+                editorConfigObject.put("mode", "edit");
+                editorConfigObject.put("callbackUrl", callbackUrl);
+                editorConfigObject.put("user", userObject);
+                userObject.put("id", username);
+
+                if (personInfo == null) {
+                    userObject.put("name", username);
+                } else {
+                    userObject.put("firstname", personInfo.getFirstName());
+                    userObject.put("lastname", personInfo.getLastName());
+                    userObject.put("name", personInfo.getFirstName() + " " + personInfo.getLastName());
+                }
+
+                if (jwtManager.jwtEnabled()) {
+                    responseJson.put("token", jwtManager.createToken(responseJson));
+                }
+
                 responseJson.put("onlyofficeUrl", configManager.getOrDefault("url", "http://127.0.0.1/"));
-                responseJson.put("key", key);
-                responseJson.put("docTitle", properties.get(ContentModel.PROP_NAME));
 
                 logger.debug("Sending JSON prepare object");
                 logger.debug(responseJson.toString(3));
@@ -80,7 +126,16 @@ public class Prepare extends AbstractWebScript {
                 response.getWriter().write(responseJson.toString(3));
             } catch (JSONException ex) {
                 throw new WebScriptException("Unable to serialize JSON: " + ex.getMessage());
+            } catch (Exception ex) {
+                throw new WebScriptException("Unable to create JWT token: " + ex.getMessage());
             }
         }
+    }
+
+    private String getDocType(String ext) {
+        if (".doc.docx.docm.dot.dotx.dotm.odt.fodt.ott.rtf.txt.html.htm.mht.pdf.djvu.fb2.epub.xps".indexOf(ext) != -1) return "text";
+        if (".xls.xlsx.xlsm.xlt.xltx.xltm.ods.fods.ots.csv".indexOf(ext) != -1) return "spreadsheet";
+        if (".pps.ppsx.ppsm.ppt.pptx.pptm.pot.potx.potm.odp.fodp.otp".indexOf(ext) != -1) return "presentation";
+        return null;
     }
 }

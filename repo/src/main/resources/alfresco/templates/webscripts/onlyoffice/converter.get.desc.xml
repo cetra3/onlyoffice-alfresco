@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>ONLYOFFICE Converter URL</shortname>
+    <description>Pipes conversion stream to request</description>
+    <url>/parashift/onlyoffice/converter</url>
+    <transaction allow="readonly"/>
+    <authentication>guest</authentication>
+</webscript>

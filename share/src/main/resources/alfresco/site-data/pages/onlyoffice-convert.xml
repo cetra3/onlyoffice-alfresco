@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Convert using ONLYOFFICE</title>
+   <title-id>page.onlyoffice-convert.title</title-id>
+   <description>Convert using ONLYOFFICE</description>
+   <description-id>page.onlyoffice-convert.description</description-id>
+   <template-instance>onlyoffice-convert</template-instance>
+   <authentication>user</authentication>
+</page>

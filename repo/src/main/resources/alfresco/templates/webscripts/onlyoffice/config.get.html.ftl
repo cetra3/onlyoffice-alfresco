@@ -18,19 +18,25 @@
          <input class="value" id="onlyurl" name="url" size="35" placeholder="http://docserver/" title="${msg('onlyoffice-config.doc-url-tooltip')}" pattern="http(s)?://.*" value="${callbackurl}" />
       </div>
       <div class="control field">
-         <input class="value" id="onlycert" name="cert" type="checkbox" ${callbackurl} />
+         <label class="label" for="jwtsecret">${msg("onlyoffice-config.jwt-secret")}</label>
+         <br/>
+         <input class="value" id="jwtsecret" name="url" size="35" value="${jwtsecret}" />
+      </div>
+      <div class="control field">
+         <input class="value" id="onlycert" name="cert" type="checkbox" ${cert} />
          <label class="label" for="onlycert">${msg("onlyoffice-config.ignore-ssl-cert")}</label>
       </div>
       <input id="postonlycfg" type="button" value="${msg('onlyoffice-config.save-btn')}"/>
    </form>
    <br>
-   <span data-saved="${msg('onlyoffice-config.saved')}" data-error="${msg('onlyoffice-config.error')}" id="onlyresponse" class="message hidden"></span>
+   <span data-saved="${msg('onlyoffice-config.saved')}" data-error="${msg('onlyoffice-config.error')}" data-mixedcontent="${msg('onlyoffice-config.mixedcontent')}" data-jsonparse="${msg('onlyoffice-config.jsonparse')}" data-docservunreachable="${msg('onlyoffice-config.docservunreachable')}" data-docservcommand="${msg('onlyoffice-config.docservcommand')}" data-docservconvert="${msg('onlyoffice-config.docservconvert')}" data-jwterror="${msg('onlyoffice-config.jwterror')}" data-statuscode="${msg('onlyoffice-config.statuscode')}" id="onlyresponse" class="message hidden"></span>
 </div>
 
 <script type="text/javascript">//<![CDATA[
    (function() {
       var url = document.getElementById("onlyurl");
       var cert = document.getElementById("onlycert");
+      var jwts = document.getElementById("jwtsecret");
 
       var form = document.getElementById("docservcfg");
       var btn = document.getElementById("postonlycfg");
@@ -52,14 +58,14 @@
          btn.disabled = false;
 
          if (xhr.status != 200) {
-               showMessage(msg.dataset.error + " status code " + xhr.status, true);
+               showMessage(msg.dataset.error + " " + msg.dataset.statuscode + " " + xhr.status, true);
                return;
          }
 
          var response = JSON.parse(xhr.response);
 
          if (!response.success) {
-               showMessage(msg.dataset.error + " " + response.message, true);
+               showMessage(msg.dataset.error + " " + msg.dataset[response.message], true);
                return;
          }
 
@@ -72,8 +78,9 @@
          var reg = RegExp(url.pattern);
          if (!reg.test(url.value)) { return null; }
 
-         obj.url = url.value;
+         obj.url = url.value.trim();
          obj.cert = cert.checked.toString();
+         obj.jwtsecret = jwts.value.trim();
 
          return obj;
       };
@@ -84,6 +91,7 @@
          msg.innerText = "";
       };
 
+      var msgTimeout = null;
       var showMessage = function(message, error) {
          if (error) {
                msg.classList.add("error");
@@ -91,6 +99,11 @@
 
          msg.innerText = message;
          msg.classList.remove("hidden");
+
+         if (msgTimeout != null) {
+            clearTimeout(msgTimeout);
+         }
+         msgTimeout = setTimeout(hideMessage, 3000);
       };
 
       btn.onclick = function() {

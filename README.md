@@ -92,6 +92,22 @@ Module configuration can be found at `/alfresco/s/onlyoffice/onlyoffice-config` 
 
 > You can also add `onlyoffice.url` in `alfresco-global.properties`. Configuration made via settings page will override `alfresco-global.properties`.
 
+## JWT
+
+JWT can be configured via configuration page or by adding `onlyoffice.jwtsecret` в `alfresco-global.properties`.
+
+The JWT configuration on the Document Server side can be found [here](https://api.onlyoffice.com/editors/signature/).
+
+## Convertation
+
+File types that can be converted
+
+* `.doc`, `.odt` -> `.docx`
+* `.xls`, `.ods` -> `.xlsx`
+* `.ppt`, `.odp` -> `.pptx`
+
+To convert one specific file you can simply select `Convert using ONLYOFFICE` action. Resulting file will be placed in the same folder. You can also configure rules for a folder, that will automatically convert files on upload or on change. You can read how such rules can be configured [here](https://docs.alfresco.com/5.1/tasks/library-folder-rules-define-create.html).
+
 ## How it works
 
 The ONLYOFFICE integration follows the API documented [here](https://api.onlyoffice.com/editors/basic):

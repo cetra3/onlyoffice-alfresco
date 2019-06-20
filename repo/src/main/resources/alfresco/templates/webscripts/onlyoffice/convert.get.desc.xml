@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>ONLYOFFICE Convert URL</shortname>
+    <description>Used to request conversion</description>
+    <url>/parashift/onlyoffice/convert</url>
+    <transaction allow="readwrite"/>
+    <authentication>user</authentication>
+</webscript>
