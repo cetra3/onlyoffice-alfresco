@@ -9,3 +9,4 @@
 ## Changed
 - `Edit in ONLYOFFICE` button now displays only for `.docx .xlsx .pptx .csv .txt` formats
 - `.csv .txt` formats will be converted to original format after editing
+- document editors will now use user locale
