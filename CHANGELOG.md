@@ -3,6 +3,7 @@
 ## 3.0.0
 ## Added
 - configuration page in administration console
+- saving settings will run a set of test to identify potential problems
 - jwt support
 - ability to convert `.odt .doc .xls .ods .ppt .odp` to Office Open XML
 
