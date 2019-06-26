@@ -5,6 +5,7 @@
             <action id="document-onlyoffice-edit" type="link" label="actions.document.onlyoffice-edit">
                 <param name="href">onlyoffice-edit?nodeRef={node.nodeRef}</param>
                 <param name="target">_blank</param>
+                <evaluator>evaluator.doclib.action.onlyofficeEditMimetype</evaluator>
                 <permissions>
                     <permission allow="true">Write</permission>
                 </permissions>
@@ -20,5 +21,24 @@
         </actionGroups>
     </config>
 
+    <config evaluator="string-compare" condition="DocLibActions">
+        <actions>
+            <action id="document-onlyoffice-convert" type="javascript" label="actions.document.onlyoffice-convert">
+                <param name="function">onActionSimpleRepoAction</param>
+                <param name="action">onlyoffice-convert</param>
+                <param name="successMessage">alfresco.document.onlyoffice.action.convert.msg.success</param>
+                <param name="failureMessage">alfresco.document.onlyoffice.action.convert.msg.failure</param>
+                <evaluator>evaluator.doclib.action.onlyofficeConvertMimetype</evaluator>
+            </action>
+        </actions>
+        <actionGroups>
+            <actionGroup id="document-browse">
+                <action index="91" id="document-onlyoffice-convert" />
+            </actionGroup>
+            <actionGroup id="document-details">
+                <action index="91" id="document-onlyoffice-convert" />
+            </actionGroup>
+        </actionGroups>
+    </config>
 
 </alfresco-config>

@@ -1,0 +1,8 @@
+<webscript>
+   <shortname>ONLYOFFICE Configuration</shortname>
+   <description>Admin Console ONLYOFFICE Configuration page</description>
+   <url>/onlyoffice/onlyoffice-config</url>
+   <family>AdminConsole</family>
+   <authentication>admin</authentication>
+   <lifecycle>internal</lifecycle>
+</webscript>

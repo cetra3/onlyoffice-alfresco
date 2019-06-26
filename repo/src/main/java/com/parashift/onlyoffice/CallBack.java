@@ -5,28 +5,31 @@ import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.lock.LockType;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentService;
+import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Base64;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Properties;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -47,14 +50,27 @@ public class CallBack extends AbstractWebScript {
     @Autowired
     LockService lockService;
 
-    @Resource(name = "policyBehaviourFilter")
+    @Autowired
+    @Qualifier("policyBehaviourFilter")
     BehaviourFilter behaviourFilter;
 
     @Autowired
     ContentService contentService;
 
-    @Resource(name = "global-properties")
-    Properties globalProp;
+    @Autowired
+    ConfigManager configManager;
+
+    @Autowired
+    JwtManager jwtManager;
+
+    @Autowired
+    NodeService nodeService;
+
+    @Autowired
+    MimetypeService mimetypeService;
+
+    @Autowired
+    Converter converterService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -64,8 +80,39 @@ public class CallBack extends AbstractWebScript {
         logger.debug("Received JSON Callback");
         try {
             JSONObject callBackJSon = new JSONObject(request.getContent().getContent());
-
             logger.debug(callBackJSon.toString(3));
+
+            if (jwtManager.jwtEnabled()) {
+                String token = callBackJSon.optString("token");
+                Boolean inBody = true;
+
+                if (token == null || token == "") {
+                    String jwth = (String) configManager.getOrDefault("jwtheader", "");
+                    String header = (String) request.getHeader(jwth.isEmpty() ? "Authorization" : jwth);
+                    token = (header != null && header.startsWith("Bearer ")) ? header.substring(7) : header;
+                    inBody = false;
+                }
+
+                if (token == null || token == "") {
+                    response.setStatus(403);
+                    response.getWriter().write("{\"error\": 0, \"message\": \"Expected JWT\"}");
+                    return;
+                }
+
+                if (!jwtManager.verify(token)) {
+                    response.setStatus(403);
+                    response.getWriter().write("{\"error\": 0, \"message\": \"Wrong JWT\"}");
+                    return;
+                }
+
+                JSONObject bodyFromToken = new JSONObject(new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), "UTF-8"));
+
+                if (inBody) {
+                    callBackJSon = bodyFromToken;
+                } else {
+                    callBackJSon = bodyFromToken.getJSONObject("payload");
+                }
+            }
 
             String[] keyParts = callBackJSon.getString("key").split("_");
             NodeRef nodeRef = new NodeRef("workspace://SpacesStore/" + keyParts[0]);
@@ -113,20 +160,32 @@ public class CallBack extends AbstractWebScript {
 
     private boolean updateNode(NodeRef nodeRef, String url) {
         logger.debug("Retrieving URL:{}", url);
+            ContentData contentData = (ContentData) nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT);
+            String mimeType = contentData.getMimetype();
 
-        try {
-            checkCert();
-            InputStream in = new URL( url ).openStream();
-            contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
-        } catch (IOException e) {
-            logger.error(ExceptionUtils.getFullStackTrace(e));
-            return false;
-        }
+            if (converterService.shouldConvertBack(mimeType)) {
+                try {
+                    logger.debug("Should convert back");
+                    url = converterService.convert(nodeRef.getId(), "docx", mimetypeService.getExtension(mimeType), url);
+                } catch (Exception e) {
+                    logger.error(ExceptionUtils.getFullStackTrace(e));
+                    return false;
+                }
+            }
+
+            try {
+                checkCert();
+                InputStream in = new URL( url ).openStream();
+                contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true).putContent(in);
+            } catch (IOException e) {
+                logger.error(ExceptionUtils.getFullStackTrace(e));
+                return false;
+            }
         return true;
     }
 
     private void checkCert() {
-        String cert = (String) globalProp.getOrDefault("onlyoffice.cert", "no");
+        String cert = (String) configManager.getOrDefault("cert", "no");
         if (cert.equals("true")) {
             TrustManager[] trustAllCerts = new TrustManager[]
             {

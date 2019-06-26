@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 
-    <title>ONLYOFFICE™</title>
+    <title>${docTitle} - ONLYOFFICE</title>
 
     <link href="${url.context}/res/components/onlyoffice/onlyoffice.css" type="text/css" rel="stylesheet">
 
@@ -21,39 +21,8 @@
         <div id="placeholder"></div>
     </div>
     <script>
-
-    var docName = "${docTitle}";
-    var docType = docName.substring(docName.lastIndexOf(".") + 1).trim().toLowerCase();
-    var documentType = getDocumentType(docType);
-
-    new DocsAPI.DocEditor("placeholder", {
-            type: "desktop",
-            width: "100%",
-            height: "100%",
-            documentType: documentType,
-            document: {
-                title: docName,
-                url: "${docUrl}",
-                fileType: docType,
-                key: "${key}",
-                permissions: {
-                    edit: true
-                },
-            },
-            editorConfig: {
-                lang: "${lang}",
-                mode: "edit",
-                callbackUrl: "${callbackUrl}",
-                user: {
-                  id: "${userId}",
-                  firstname: "${firstName}",
-                  lastname: "${lastName}",
-                  name: "${firstName} ${lastName}",
-                }
-            },
-            events: {
-            },
-        });
+    var config = JSON.parse('${config}');
+    new DocsAPI.DocEditor("placeholder", config);
     </script>
 </body>
 </html>

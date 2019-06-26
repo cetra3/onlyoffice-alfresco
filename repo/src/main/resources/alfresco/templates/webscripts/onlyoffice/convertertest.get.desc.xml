@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>ONLYOFFICE Converter Test URL</shortname>
+    <description>Provides simple txt file to convert</description>
+    <url>/parashift/onlyoffice/convertertest</url>
+    <authentication>guest</authentication>
+</webscript>

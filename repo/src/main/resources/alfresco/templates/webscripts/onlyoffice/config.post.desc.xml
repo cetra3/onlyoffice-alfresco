@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>ONLYOFFICE Config URL</shortname>
+    <description>Endpoint to configure ONLYOFFICE Document Server</description>
+    <url>/onlyoffice/onlyoffice-config</url>
+    <authentication>admin</authentication>
+</webscript>
