@@ -1,9 +1,9 @@
 buildscript {
-    repositories{
-        maven { url "https://mvn.parashift.com.au/public/" }
+    repositories {
+        jcenter()
     }
     dependencies {
-        classpath 'com.parashift.amp:amp-plugin:1.1.1'
+        classpath 'com.parashift.amp:amp-plugin:1.2.0'
     }
 }
 

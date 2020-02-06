@@ -1,9 +1,9 @@
 buildscript {
     repositories {
-        maven { url "https://mvn.parashift.com.au/public/" }
+        jcenter()
     }
     dependencies {
-        classpath 'com.parashift.amp:amp-plugin:1.1.1'
+        classpath 'com.parashift.amp:amp-plugin:1.2.0'
     }
 }
 
@@ -43,7 +43,7 @@ configurations {
 
 dependencies {
 
-    compile (group: "org.alfresco", name: "alfresco", version: "${alfresco.version}", classifier: "classes")
+    compile "org.alfresco:alfresco-repository:${alfresco.version}"
     compile ('com.monitorjbl:xlsx-streamer:1.0.2') { transitive = false }
     compile 'javax.servlet:javax.servlet-api:3.0.1'
  
