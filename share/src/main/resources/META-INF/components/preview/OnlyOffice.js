@@ -85,13 +85,20 @@
                     fileType: translateDocumentType(docType),
                     key: this.attributes.key,
                     permissions: {
-                        edit: true
+                        edit: true,
+                        comment: false
                     }
                 },
                 editorConfig: {
                     mode: "view",
+                    lang: this.attributes.lang,
                     callbackUrl: this.attributes.callbackUrl,
-                    user: this.attributes.user
+                    user: this.attributes.user,
+                    customization: {
+                        zoom: -2,
+                        chat: false,
+                        comments: false
+                    }
                 }
             };
 

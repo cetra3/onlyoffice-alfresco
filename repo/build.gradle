@@ -22,11 +22,15 @@ allprojects {
 ext {
     alfresco = [:]
     alfresco.version = "5.2.f"
-
 }
 
+   ByteArrayOutputStream byteOut = new ByteArrayOutputStream()
+    project.exec {
+        commandLine = "git describe --tags".split(" ")
+        standardOutput = byteOut
+    }
+project.version = byteOut.toString().trim()
 project.description = "ONLYOFFICE Integration for Alfresco"
-version = "git describe --tags".execute().text.trim()
 
 repositories {
     mavenCentral()
@@ -42,6 +46,8 @@ configurations {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
     compile "org.alfresco:alfresco-repository:${alfresco.version}"
     compile ('com.monitorjbl:xlsx-streamer:1.0.2') { transitive = false }

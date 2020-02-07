@@ -46,7 +46,8 @@ if (model.widgets)
                     pObj.user = {
                         userId: user.id,
                         firstName: user.firstName,
-                        lastName: user.lastName
+                        lastName: user.lastName,
+                        name: user.firstName + " " + user.lastName
                     }
 
                     widget.options.pluginConditions = jsonUtils.toJSONString([{

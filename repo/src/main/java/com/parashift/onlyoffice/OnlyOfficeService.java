@@ -8,10 +8,10 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.Serializable;
@@ -40,7 +40,8 @@ public class OnlyOfficeService {
     @Autowired
     NodeService nodeService;
 
-    @Resource(name = "global-properties")
+    @Autowired
+    @Qualifier( "global-properties")
     Properties globalProp;
 
     private byte[] token;

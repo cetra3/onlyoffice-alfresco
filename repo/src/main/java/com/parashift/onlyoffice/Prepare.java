@@ -20,13 +20,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.io.*;
 import java.util.*;
 
@@ -48,7 +48,8 @@ public class Prepare extends AbstractWebScript {
     @Autowired
     ContentService contentService;
 
-    @Resource(name = "global-properties")
+    @Autowired
+    @Qualifier("global-properties")
     Properties globalProp;
 
     Integer docxMaxParagraph;

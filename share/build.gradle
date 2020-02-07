@@ -15,8 +15,13 @@ allprojects {
     targetCompatibility = 1.7
 }
 
+    ByteArrayOutputStream byteOut = new ByteArrayOutputStream()
+    project.exec {
+        commandLine = "git describe --tags".split(" ")
+        standardOutput = byteOut
+    }
+project.version = byteOut.toString().trim()
 project.description = "ONLYOFFICE Integration for Alfresco Share"
-version = "git describe --tags".execute().text.trim()
 
 repositories {
     mavenCentral()
