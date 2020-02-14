@@ -49,11 +49,13 @@
         },
         editorConfig: {
             mode: "edit",
+            lang: "${lang}",
             callbackUrl: "${callbackUrl}",
             user: {
               id: "${userId}",
               firstname: "${firstName}",
-              lastname: "${lastName}"
+              lastname: "${lastName}",
+              name: "${firstName} ${lastName}"
             }
         },
         events: {

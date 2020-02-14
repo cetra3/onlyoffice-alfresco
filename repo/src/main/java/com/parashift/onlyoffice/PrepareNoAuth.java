@@ -11,12 +11,12 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
@@ -41,7 +41,8 @@ public class PrepareNoAuth extends AbstractWebScript {
     @Autowired
     NodeService nodeService;
 
-    @Resource(name = "global-properties")
+    @Autowired
+    @Qualifier("global-properties")
     Properties globalProp;
 
     @Override

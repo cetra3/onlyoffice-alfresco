@@ -3,6 +3,7 @@
 This Share plugin enables users to edit and preview Office documents within ONLYOFFICE from Alfresco Share. This will create a new **Edit in ONLYOFFICE** action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to Alfresco.
 
 Tested with Enterprise 5.0.\*, 5.1.\*, 5.2.\* and Community 5.1.\*, 5.2.\*
+Version 2.0.0 tested only with Community 6.1 (java 11)
 
 ## Features
 

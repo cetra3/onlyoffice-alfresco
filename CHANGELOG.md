@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0] 2020-02-07
+
+### Changed
+* Support Java 11 for Alfresco 6.x (replace depricated javex.annotation.Resource to org.springframework.beans.factory.annotation).
+* Editor config and view parameters.
+
+### Fixed
+* Can't find amp-plagin location
+* Don't generat correct project.version
+* Don't switch editor languages.
+* Show all users as Anonymous.
+
 ## [1.4.1] 2018-10-11
 
 ### Fixed
